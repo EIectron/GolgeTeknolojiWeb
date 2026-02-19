@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir:*)",
+      "Bash(git -C \"C:/Users/NT/Documents/Github/GolgeTeknolojiWeb\" status)",
+      "Bash(git -C:*)",
+      "Bash(awk:*)",
+      "Bash(echo:*)"
+    ]
+  }
+}

@@ -1,0 +1,1323 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shadow View — Gizlilik Politikası | Gölge Teknoloji</title>
+  <meta name="description" content="Shadow View Android uygulaması gizlilik politikası. Kullanıcı verilerinin nasıl toplandığı, kullanıldığı ve korunduğu hakkında şeffaf bilgi.">
+  <style>
+/* ============================================
+   GÖLGE TEKNOLOJİ — Futuristic Dark Theme
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Exo+2:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap');
+
+/* === CSS Variables === */
+:root {
+  --bg-deep: #050810;
+  --bg-primary: #0a0e1a;
+  --bg-card: rgba(12, 18, 40, 0.6);
+  --bg-glass: rgba(255, 255, 255, 0.03);
+  --bg-glass-hover: rgba(255, 255, 255, 0.07);
+  --border-glass: rgba(255, 255, 255, 0.08);
+  --border-glow: rgba(0, 240, 255, 0.15);
+
+  --cyan: #00f0ff;
+  --cyan-dim: #00a8b3;
+  --cyan-glow: rgba(0, 240, 255, 0.3);
+  --gold: #f0c040;
+  --gold-dim: #c49a20;
+  --gold-glow: rgba(240, 192, 64, 0.3);
+  --purple: #8b5cf6;
+  --purple-glow: rgba(139, 92, 246, 0.3);
+  --red-accent: #ff4060;
+  --green-accent: #48bb78;
+
+  --text-primary: #e8ecf4;
+  --text-secondary: rgba(232, 236, 244, 0.6);
+  --text-muted: rgba(232, 236, 244, 0.35);
+
+  --font-display: 'Orbitron', sans-serif;
+  --font-heading: 'Rajdhani', sans-serif;
+  --font-body: 'Exo 2', sans-serif;
+
+  --nav-height: 80px;
+  --max-width: 1280px;
+  --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* === Reset & Base === */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: var(--cyan-dim) var(--bg-deep);
+}
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-deep); }
+::-webkit-scrollbar-thumb { background: var(--cyan-dim); border-radius: 3px; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg-deep);
+  color: var(--text-primary);
+  line-height: 1.7;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; display: block; }
+button { cursor: pointer; font-family: inherit; }
+
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* === Animated Background === */
+.bg-grid {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, black 20%, transparent 70%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, black 20%, transparent 70%);
+}
+
+.bg-orbs {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.bg-orbs .orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  opacity: 0.10;
+  animation: orbFloat 20s ease-in-out infinite;
+}
+
+.bg-orbs .orb:nth-child(1) {
+  width: 500px; height: 500px;
+  background: var(--purple);
+  top: -10%; left: -10%;
+  animation-delay: 0s;
+}
+
+.bg-orbs .orb:nth-child(2) {
+  width: 400px; height: 400px;
+  background: var(--cyan);
+  bottom: -15%; right: -10%;
+  animation-delay: -7s;
+}
+
+.bg-orbs .orb:nth-child(3) {
+  width: 350px; height: 350px;
+  background: var(--gold);
+  top: 50%; right: 30%;
+  animation-delay: -14s;
+}
+
+@keyframes orbFloat {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(40px, -30px) scale(1.05); }
+  66% { transform: translate(-20px, 20px) scale(0.95); }
+}
+
+/* === Navigation === */
+.navbar {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%;
+  height: var(--nav-height);
+  z-index: 1000;
+  transition: var(--transition);
+  backdrop-filter: blur(0px);
+  border-bottom: 1px solid transparent;
+}
+
+.navbar.scrolled {
+  background: rgba(5, 8, 16, 0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border-glass);
+}
+
+.navbar .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.nav-brand img {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  object-fit: contain;
+}
+
+.nav-brand-text {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+.nav-brand-text span { color: var(--cyan); }
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  list-style: none;
+}
+
+.nav-links a {
+  padding: 8px 16px;
+  font-family: var(--font-heading);
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  transition: var(--transition);
+  position: relative;
+  border-radius: 8px;
+}
+
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: var(--cyan);
+  transition: var(--transition);
+  transform: translateX(-50%);
+  border-radius: 1px;
+  box-shadow: 0 0 8px var(--cyan-glow);
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+  color: var(--text-primary);
+}
+
+.nav-links a:hover::after,
+.nav-links a.active::after {
+  width: 60%;
+}
+
+.nav-cta {
+  padding: 10px 24px !important;
+  background: linear-gradient(135deg, var(--cyan-dim), var(--cyan)) !important;
+  color: var(--bg-deep) !important;
+  border-radius: 8px !important;
+  font-weight: 700 !important;
+  box-shadow: 0 0 20px var(--cyan-glow);
+  transition: var(--transition) !important;
+}
+
+.nav-cta:hover {
+  box-shadow: 0 0 30px var(--cyan-glow), 0 4px 20px rgba(0,0,0,0.3) !important;
+  transform: translateY(-1px);
+}
+
+.nav-cta::after { display: none !important; }
+
+.nav-toggle {
+  display: none;
+  background: none;
+  border: none;
+  width: 36px;
+  height: 36px;
+  position: relative;
+  z-index: 1001;
+}
+
+.nav-toggle span {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: var(--text-primary);
+  margin: 6px auto;
+  transition: var(--transition);
+  border-radius: 2px;
+}
+
+.nav-toggle.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+.nav-toggle.active span:nth-child(2) { opacity: 0; }
+.nav-toggle.active span:nth-child(3) { transform: rotate(-45deg) translate(6px, -6px); }
+
+/* === Section === */
+.section {
+  position: relative;
+  z-index: 1;
+  padding: 80px 0;
+}
+
+.section-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--cyan);
+  margin-bottom: 16px;
+}
+
+.section-label::before {
+  content: '';
+  width: 30px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--cyan), transparent);
+}
+
+/* === Buttons === */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 32px;
+  font-family: var(--font-heading);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  border: none;
+  border-radius: 10px;
+  transition: var(--transition);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--cyan-dim), var(--cyan));
+  color: var(--bg-deep);
+  box-shadow: 0 0 25px var(--cyan-glow), 0 4px 15px rgba(0,0,0,0.3);
+}
+
+.btn-primary:hover {
+  box-shadow: 0 0 40px var(--cyan-glow), 0 8px 25px rgba(0,0,0,0.4);
+  transform: translateY(-2px);
+}
+
+.btn svg { width: 18px; height: 18px; }
+
+/* === CTA === */
+.cta-section {
+  text-align: center;
+  padding: 80px 0;
+}
+
+.cta-box {
+  background: linear-gradient(135deg, rgba(0, 240, 255, 0.05), rgba(139, 92, 246, 0.05));
+  border: 1px solid var(--border-glass);
+  border-radius: 32px;
+  padding: 64px 48px;
+  position: relative;
+  overflow: hidden;
+}
+
+.cta-box::before {
+  content: '';
+  position: absolute;
+  top: -1px; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--cyan), var(--gold), transparent);
+}
+
+.cta-title {
+  font-family: var(--font-display);
+  font-size: clamp(22px, 3vw, 36px);
+  font-weight: 800;
+  margin-bottom: 16px;
+}
+
+.cta-desc {
+  font-size: 17px;
+  color: var(--text-secondary);
+  max-width: 500px;
+  margin: 0 auto 32px;
+  line-height: 1.8;
+}
+
+/* === Footer === */
+.footer {
+  position: relative;
+  z-index: 1;
+  border-top: 1px solid var(--border-glass);
+  padding: 64px 0 32px;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 48px;
+  margin-bottom: 48px;
+}
+
+.footer-brand-text {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  margin-bottom: 12px;
+}
+
+.footer-brand-text span { color: var(--cyan); }
+
+.footer-desc {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  max-width: 320px;
+}
+
+.footer-col h4 {
+  font-family: var(--font-heading);
+  font-size: 15px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 16px;
+  color: var(--text-primary);
+}
+
+.footer-col ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.footer-col a {
+  font-size: 14px;
+  color: var(--text-secondary);
+  transition: var(--transition);
+}
+
+.footer-col a:hover { color: var(--cyan); }
+
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 32px;
+  border-top: 1px solid var(--border-glass);
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.footer-social {
+  display: flex;
+  gap: 12px;
+}
+
+.footer-social a {
+  width: 36px; height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: var(--bg-glass);
+  border: 1px solid var(--border-glass);
+  color: var(--text-secondary);
+  transition: var(--transition);
+}
+
+.footer-social a:hover {
+  border-color: var(--cyan-dim);
+  color: var(--cyan);
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.1);
+}
+
+/* === Page Header === */
+.page-header {
+  position: relative;
+  padding: 160px 0 80px;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.page-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-glass), transparent);
+}
+
+.page-header h1 {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 4.5vw, 52px);
+  font-weight: 800;
+  margin-bottom: 16px;
+}
+
+.page-header .gradient-text {
+  background: linear-gradient(135deg, var(--purple), var(--cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.page-header p {
+  font-size: 17px;
+  color: var(--text-secondary);
+  max-width: 600px;
+  line-height: 1.8;
+}
+
+.page-header .update-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 14px;
+  background: rgba(139, 92, 246, 0.1);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  border-radius: 50px;
+  font-family: var(--font-heading);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--purple);
+  margin-bottom: 20px;
+  letter-spacing: 1px;
+}
+
+/* === Animations === */
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+
+/* === Glowing Separator === */
+.glow-line {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--cyan-dim), transparent);
+  position: relative;
+  z-index: 1;
+}
+
+/* ============================================
+   PAGE-SPECIFIC: PRIVACY POLICY
+   ============================================ */
+
+/* TOC (Table of contents) sidebar */
+.privacy-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 48px;
+  align-items: start;
+}
+
+.privacy-toc {
+  position: sticky;
+  top: calc(var(--nav-height) + 24px);
+  background: var(--bg-glass);
+  border: 1px solid var(--border-glass);
+  border-radius: 16px;
+  padding: 24px;
+  backdrop-filter: blur(15px);
+}
+
+.privacy-toc h3 {
+  font-family: var(--font-heading);
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--cyan);
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-glass);
+}
+
+.privacy-toc ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.privacy-toc ul a {
+  display: block;
+  padding: 8px 12px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  border-radius: 8px;
+  transition: var(--transition);
+  line-height: 1.4;
+}
+
+.privacy-toc ul a:hover {
+  background: var(--bg-glass-hover);
+  color: var(--cyan);
+}
+
+/* Policy sections */
+.policy-section {
+  background: var(--bg-glass);
+  border: 1px solid var(--border-glass);
+  border-radius: 20px;
+  padding: 40px;
+  margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
+  transition: var(--transition);
+  scroll-margin-top: calc(var(--nav-height) + 24px);
+}
+
+.policy-section::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 4px; height: 100%;
+  background: linear-gradient(180deg, var(--purple), var(--cyan));
+  border-radius: 0;
+}
+
+.policy-section:hover {
+  border-color: var(--border-glow);
+  background: var(--bg-glass-hover);
+}
+
+.policy-section h2 {
+  font-family: var(--font-display);
+  font-size: clamp(16px, 2vw, 20px);
+  font-weight: 700;
+  color: var(--cyan);
+  margin-bottom: 20px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border-glass);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.policy-section h2 .sec-icon {
+  font-size: 1.3rem;
+  flex-shrink: 0;
+}
+
+.policy-section h3 {
+  font-family: var(--font-heading);
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--gold);
+  margin: 24px 0 10px;
+}
+
+.policy-section p {
+  font-size: 15px;
+  color: var(--text-secondary);
+  line-height: 1.85;
+  margin-bottom: 14px;
+}
+
+.policy-section p:last-child { margin-bottom: 0; }
+
+.policy-section ul, .policy-section ol {
+  padding-left: 0;
+  list-style: none;
+  margin-bottom: 14px;
+}
+
+.policy-section ul li,
+.policy-section ol li {
+  padding: 9px 0 9px 28px;
+  position: relative;
+  font-size: 15px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+
+.policy-section ul li:last-child,
+.policy-section ol li:last-child {
+  border-bottom: none;
+}
+
+.policy-section ul li::before {
+  content: '▸';
+  position: absolute;
+  left: 6px;
+  color: var(--cyan);
+  font-size: 13px;
+  top: 10px;
+}
+
+.policy-section ol {
+  counter-reset: pitem;
+}
+
+.policy-section ol li::before {
+  counter-increment: pitem;
+  content: counter(pitem) '.';
+  position: absolute;
+  left: 0;
+  color: var(--cyan);
+  font-weight: 700;
+  font-family: var(--font-display);
+  font-size: 12px;
+  top: 10px;
+}
+
+.policy-section strong {
+  color: var(--text-primary);
+}
+
+/* Info box */
+.info-box {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.07), rgba(0, 240, 255, 0.07));
+  border: 1px solid rgba(139, 92, 246, 0.15);
+  border-radius: 12px;
+  padding: 18px 22px;
+  margin: 16px 0;
+  border-left: 3px solid var(--purple);
+  font-size: 15px;
+  color: var(--text-secondary);
+  line-height: 1.8;
+}
+
+.info-box strong { color: var(--purple); }
+
+/* Green box */
+.green-box {
+  background: rgba(72, 187, 120, 0.06);
+  border: 1px solid rgba(72, 187, 120, 0.15);
+  border-radius: 12px;
+  padding: 18px 22px;
+  margin: 16px 0;
+  border-left: 3px solid var(--green-accent);
+  font-size: 15px;
+  color: var(--text-secondary);
+  line-height: 1.8;
+}
+
+.green-box strong { color: var(--green-accent); }
+
+/* Gold box */
+.gold-box {
+  background: rgba(240, 192, 64, 0.06);
+  border: 1px solid rgba(240, 192, 64, 0.15);
+  border-radius: 12px;
+  padding: 18px 22px;
+  margin: 16px 0;
+  border-left: 3px solid var(--gold);
+  font-size: 15px;
+  color: var(--text-secondary);
+  line-height: 1.8;
+}
+
+.gold-box strong { color: var(--gold); }
+
+/* Contact table */
+.contact-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+}
+
+.contact-table td {
+  padding: 12px 16px;
+  font-size: 14px;
+  border-bottom: 1px solid var(--border-glass);
+  color: var(--text-secondary);
+}
+
+.contact-table td:first-child {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--text-muted);
+  width: 30%;
+}
+
+.contact-table td:last-child a {
+  color: var(--cyan);
+  transition: var(--transition);
+}
+
+.contact-table td:last-child a:hover {
+  text-decoration: underline;
+}
+
+.contact-table tr:last-child td { border-bottom: none; }
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .privacy-layout { grid-template-columns: 220px 1fr; gap: 32px; }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 768px) {
+  :root { --nav-height: 64px; }
+
+  .nav-links {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100vh;
+    background: rgba(5, 8, 16, 0.98);
+    backdrop-filter: blur(30px);
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    z-index: 999;
+  }
+
+  .nav-links.open { display: flex; }
+  .nav-links a { font-size: 18px; padding: 12px 24px; }
+  .nav-toggle { display: block; }
+
+  .section { padding: 60px 0; }
+  .page-header { padding: 120px 0 60px; }
+  .privacy-layout { grid-template-columns: 1fr; }
+  .privacy-toc { position: static; }
+  .footer-grid { grid-template-columns: 1fr; gap: 32px; }
+  .footer-bottom { flex-direction: column; gap: 16px; text-align: center; }
+  .cta-box { padding: 40px 24px; }
+  .policy-section { padding: 28px 20px; }
+}
+
+@media (max-width: 480px) {
+  .container { padding: 0 16px; }
+}
+</style>
+  <link rel="icon" type="image/png" href="images/ShadowLogo2.png">
+</head>
+<body>
+
+  <div class="bg-grid"></div>
+  <div class="bg-orbs">
+    <div class="orb"></div>
+    <div class="orb"></div>
+    <div class="orb"></div>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="container">
+      <a href="index.html" class="nav-brand">
+        <img src="images/ShadowLogo2.png" alt="Shadow Logo">
+        <div class="nav-brand-text">Gölge <span>Teknoloji</span></div>
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html">Ana Sayfa</a></li>
+        <li><a href="urunler.html">Ürünler</a></li>
+        <li><a href="shadow-view.html" class="active">Shadow View</a></li>
+        <li><a href="hakkinda.html">Hakkında</a></li>
+        <li><a href="iletisim.html" class="nav-cta">İletişim</a></li>
+      </ul>
+      <button class="nav-toggle" aria-label="Menü">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Page Header -->
+  <header class="page-header">
+    <div class="container">
+      <div class="update-badge">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Son Güncelleme: Şubat 2026
+      </div>
+      <span class="section-label">Shadow View Uygulaması</span>
+      <h1>Gizlilik <span class="gradient-text">Politikası</span></h1>
+      <p>Shadow View'ın kişisel verilerinize yaklaşımı — şeffaf, güvenli ve Google Play politikalarıyla tam uyumlu.</p>
+    </div>
+  </header>
+
+  <!-- Content -->
+  <section class="section" style="padding-top: 48px;">
+    <div class="container">
+      <div class="privacy-layout">
+
+        <!-- TOC -->
+        <aside class="privacy-toc reveal">
+          <h3>İçindekiler</h3>
+          <ul>
+            <li><a href="#giris">1. Giriş</a></li>
+            <li><a href="#toplanan-veriler">2. Toplanan Veriler</a></li>
+            <li><a href="#veri-kullanimi">3. Verilerin Kullanımı</a></li>
+            <li><a href="#veri-paylasimi">4. Veri Paylaşımı</a></li>
+            <li><a href="#veri-depolama">5. Veri Depolama</a></li>
+            <li><a href="#veri-guvenligi">6. Veri Güvenliği</a></li>
+            <li><a href="#kullanici-haklari">7. Kullanıcı Hakları</a></li>
+            <li><a href="#izinler">8. Uygulama İzinleri</a></li>
+            <li><a href="#ucuncu-taraf">9. Üçüncü Taraf Hizmetler</a></li>
+            <li><a href="#cocuklar">10. Çocukların Gizliliği</a></li>
+            <li><a href="#degisiklikler">11. Politika Değişiklikleri</a></li>
+            <li><a href="#iletisim">12. İletişim</a></li>
+          </ul>
+        </aside>
+
+        <!-- Policy Content -->
+        <div class="privacy-content">
+
+          <!-- 1. Giriş -->
+          <div id="giris" class="policy-section reveal">
+            <h2><span class="sec-icon">📋</span> 1. Giriş</h2>
+            <p>
+              Bu Gizlilik Politikası, <strong>Gölge Teknoloji</strong> tarafından geliştirilen
+              <strong>Shadow View</strong> Android uygulamasının kullanıcı verilerini nasıl topladığını,
+              kullandığını, sakladığını ve koruduğunu açıklamaktadır.
+            </p>
+            <p>
+              Shadow View uygulamasını indirerek veya kullanarak bu politikayı kabul etmiş
+              sayılırsınız. Uygulamayı kullanmaya devam etmek istemiyorsanız lütfen
+              uygulamayı kaldırınız.
+            </p>
+            <div class="info-box">
+              <strong>Temel İlke:</strong> Shadow View; Shadow Gradiometre ve Shadow Gravion cihazlarından
+              alınan manyetik / radar verilerini görselleştirmek için tasarlanmış profesyonel bir araçtır.
+              Gizliliğiniz bizim için önceliklidir — verileriniz yalnızca uygulamanın temel işlevleri
+              için kullanılır.
+            </div>
+          </div>
+
+          <!-- 2. Toplanan Veriler -->
+          <div id="toplanan-veriler" class="policy-section reveal">
+            <h2><span class="sec-icon">📊</span> 2. Toplanan Veriler</h2>
+
+            <h3>Biz Tarafından Toplanan Veriler</h3>
+            <p>Shadow View uygulaması aşağıdaki verileri yerel cihazınızda işler:</p>
+            <ul>
+              <li><strong>Cihaz Ölçüm Verileri:</strong> Shadow sensör cihazından WiFi üzerinden alınan manyetik alan ve radar ölçüm verileri. Bu veriler cihazınızda yerel olarak işlenir ve saklanır.</li>
+              <li><strong>Tarama Oturumu Verileri:</strong> Oluşturduğunuz tarama oturumları, harita verileri ve anomali kayıtları yalnızca cihazınızda depolanır.</li>
+              <li><strong>Uygulama Tercihleri:</strong> Renk paleti, filtre ayarları, görüntüleme modu gibi uygulama içi tercihler yerel depolamada tutulur.</li>
+            </ul>
+
+            <h3>Otomatik Olarak Toplanan Veriler</h3>
+            <p>Uygulama, normal çalışması sırasında aşağıdaki teknik bilgilere erişebilir:</p>
+            <ul>
+              <li><strong>WiFi Ağ Bilgisi:</strong> Shadow sensör cihazına bağlantı kurmak için yerel WiFi ağ bilgisi gereklidir. Bu bilgi sunucularımıza gönderilmez.</li>
+              <li><strong>Depolama Alanı:</strong> Tarama sonuçları, CSV ve HTML raporları cihazınızın dahili depolama alanına kaydedilir.</li>
+              <li><strong>Konum Verisi (İsteğe Bağlı):</strong> Tarama verilerine coğrafi konum eklemek isteyenler için yalnızca izin verildiğinde ve kullanıldığında alınır. Sunucularımıza gönderilmez.</li>
+            </ul>
+
+            <div class="green-box">
+              <strong>Toplamadığımız Veriler:</strong> Ad, soyad, e-posta adresi, telefon numarası,
+              ödeme bilgisi, konum geçmişi (sürekli), tarayıcı geçmişi, kişi listesi veya başka
+              kişisel tanımlayıcı bilgiler toplanmaz.
+            </div>
+          </div>
+
+          <!-- 3. Veri Kullanımı -->
+          <div id="veri-kullanimi" class="policy-section reveal">
+            <h2><span class="sec-icon">⚙️</span> 3. Verilerin Kullanımı</h2>
+            <p>Toplanan veriler yalnızca aşağıdaki amaçlar için kullanılır:</p>
+            <ul>
+              <li><strong>Uygulamanın Temel İşlevi:</strong> Shadow Gradiometre ve Gravion cihazlarından gelen verileri gerçek zamanlı işlemek, 2D/3D/4D görselleştirme oluşturmak.</li>
+              <li><strong>ShadowAI Analizi:</strong> Anomali tespiti ve yorum için yapay zeka modülünün yerel cihazda çalıştırılması. Analiz veriniz harici sunuculara aktarılmaz.</li>
+              <li><strong>Veri Dışa Aktarımı:</strong> Kullanıcının talep etmesi halinde tarama verilerinin CSV, HTML veya görsel formatında yerel cihaza kaydedilmesi.</li>
+              <li><strong>Uygulama Performansı:</strong> Bağlantı kalitesi ve örnekleme hızı optimizasyonu için anlık cihaz istatistikleri.</li>
+              <li><strong>Kişiselleştirme:</strong> Kullanıcının seçtiği uygulama tema ve filtre ayarlarının saklanması.</li>
+            </ul>
+
+            <div class="info-box">
+              <strong>Önemli:</strong> Verileriniz pazarlama, profilleme, reklam hedefleme veya üçüncü
+              taraf analiz amaçlarıyla kullanılmaz.
+            </div>
+          </div>
+
+          <!-- 4. Veri Paylaşımı -->
+          <div id="veri-paylasimi" class="policy-section reveal">
+            <h2><span class="sec-icon">🔗</span> 4. Veri Paylaşımı</h2>
+            <p>
+              Gölge Teknoloji, kullanıcı verilerini üçüncü taraflarla <strong>satmaz</strong>,
+              <strong>kiralamaz</strong> veya ticari amaçlarla <strong>paylaşmaz</strong>.
+            </p>
+
+            <h3>Sınırlı Paylaşım Koşulları</h3>
+            <p>Aşağıdaki istisnai durumlarda veri paylaşımı söz konusu olabilir:</p>
+            <ul>
+              <li><strong>Kullanıcı İnisiyatifi:</strong> Kullanıcı, dışa aktarma özelliğini kullanarak raporunu kendi iradesiyle başka kişi veya platformlarla paylaşırsa.</li>
+              <li><strong>Yasal Zorunluluk:</strong> Yetkili Türk mahkemeleri veya yasal makamlardan bağlayıcı bir talep gelmesi halinde, yalnızca yasal olarak zorunlu bilgilerle sınırlı biçimde.</li>
+              <li><strong>Varlık Devri:</strong> Şirket birleşmesi veya satın alınması durumunda, kullanıcılar önceden bilgilendirilir ve bu politika aynı şartlarda geçerliliğini sürdürür.</li>
+            </ul>
+
+            <div class="green-box">
+              <strong>Kullanıcı İzni Olmadan Paylaşılmaz:</strong> Herhangi bir üçüncü taraf ile
+              kullanıcı onayı olmaksızın kişisel veri paylaşımı yapılmaz.
+            </div>
+          </div>
+
+          <!-- 5. Veri Depolama -->
+          <div id="veri-depolama" class="policy-section reveal">
+            <h2><span class="sec-icon">💾</span> 5. Veri Depolama ve Saklama Süresi</h2>
+
+            <h3>Yerel Depolama</h3>
+            <p>
+              Tüm tarama verileri, oturum kayıtları ve uygulama tercihleri yalnızca kullanıcının
+              cihazında, Android sisteminin sağladığı uygulama korumalı depolama alanında saklanır.
+              Gölge Teknoloji bu verilere uzaktan erişemez.
+            </p>
+
+            <h3>Saklama Süresi</h3>
+            <ul>
+              <li><strong>Tarama Oturumları:</strong> Kullanıcı silene kadar cihazda saklanır.</li>
+              <li><strong>Uygulama Tercihleri:</strong> Uygulama kaldırılana kadar cihazda saklanır.</li>
+              <li><strong>Dışa Aktarılan Raporlar:</strong> Kullanıcının cihaz depolama alanında, kullanıcı silene kadar kalır.</li>
+            </ul>
+
+            <h3>Veri Silme</h3>
+            <p>
+              Tüm uygulama verilerini silmek için Android sistem ayarlarından
+              <em>"Uygulama Bilgisi → Depolamayı Temizle"</em> seçeneğini kullanabilir
+              veya uygulamayı tamamen kaldırabilirsiniz.
+            </p>
+          </div>
+
+          <!-- 6. Veri Güvenliği -->
+          <div id="veri-guvenligi" class="policy-section reveal">
+            <h2><span class="sec-icon">🔒</span> 6. Veri Güvenliği</h2>
+            <p>
+              Gölge Teknoloji, kullanıcı verilerinin güvenliğini sağlamak için aşağıdaki
+              teknik ve idari önlemleri almaktadır:
+            </p>
+            <ul>
+              <li><strong>Yerel İşleme:</strong> Tüm hassas ölçüm verileri cihazda işlenir; uzak sunuculara gönderilmez.</li>
+              <li><strong>Android Güvenli Depolama:</strong> Uygulama verileri Android'in korumalı uygulama sandbox'ı içinde saklanır; başka uygulamalar erişemez.</li>
+              <li><strong>WiFi İletişimi:</strong> Shadow cihazıyla yerel ağ üzerinden gerçekleştirilen veri iletimi şifreleme destekli protokolle korunur.</li>
+              <li><strong>Düzenli Güvenlik Güncellemeleri:</strong> Uygulama bilinen güvenlik açıklarına karşı düzenli olarak güncellenir.</li>
+            </ul>
+            <div class="gold-box">
+              <strong>Güvenlik Bildirimi:</strong> Uygulamada bir güvenlik açığı keşfederseniz lütfen
+              <a href="mailto:teknolojigolge@gmail.com" style="color:var(--gold)">teknolojigolge@gmail.com</a>
+              adresine bildirin. Sorumlu açıklama ilkesi çerçevesinde derhal değerlendiririz.
+            </div>
+          </div>
+
+          <!-- 7. Kullanıcı Hakları -->
+          <div id="kullanici-haklari" class="policy-section reveal">
+            <h2><span class="sec-icon">👤</span> 7. Kullanıcı Hakları</h2>
+            <p>
+              Kullanıcılar olarak aşağıdaki haklara sahipsiniz:
+            </p>
+            <ul>
+              <li><strong>Erişim Hakkı:</strong> Uygulamada saklanan verilerinize doğrudan uygulama arayüzü aracılığıyla erişebilirsiniz.</li>
+              <li><strong>Silme Hakkı:</strong> Tarama verilerinizi, oturumlarınızı ve tüm uygulama verilerini istediğiniz zaman silebilirsiniz.</li>
+              <li><strong>Taşıma Hakkı:</strong> Verilerinizi CSV veya HTML formatında dışa aktararak istediğiniz platforma taşıyabilirsiniz.</li>
+              <li><strong>İzin Geri Çekme:</strong> Android ayarlarından konum, depolama gibi uygulama izinlerini istediğiniz zaman kaldırabilirsiniz.</li>
+              <li><strong>Uygulama Kaldırma:</strong> Uygulamayı cihazınızdan kaldırdığınızda tüm yerel veriler otomatik olarak silinir.</li>
+            </ul>
+            <div class="info-box">
+              Haklarınızla ilgili herhangi bir sorununuz varsa
+              <strong>teknolojigolge@gmail.com</strong> adresinden bizimle iletişime geçebilirsiniz.
+              Başvurulara 30 gün içinde yanıt verilir.
+            </div>
+          </div>
+
+          <!-- 8. Uygulama İzinleri -->
+          <div id="izinler" class="policy-section reveal">
+            <h2><span class="sec-icon">🔑</span> 8. Uygulama İzinleri</h2>
+            <p>Shadow View, çalışması için aşağıdaki Android izinlerini kullanabilir:</p>
+            <ul>
+              <li>
+                <strong>INTERNET / WIFI_STATE / CHANGE_WIFI_STATE:</strong> Shadow Gradiometre veya Gravion cihazı ile WiFi üzerinden veri iletişimi kurmak için zorunludur. İnternet bağlantısı başka bir amaçla kullanılmaz.
+              </li>
+              <li>
+                <strong>ACCESS_FINE_LOCATION / ACCESS_COARSE_LOCATION (İsteğe Bağlı):</strong>
+                Android 10 ve üzeri sürümlerde WiFi ağına bağlanmak için sistem tarafından talep edilir.
+                Konum verisi yalnızca kullanıcının tarama verisine GPS koordinatı eklemek istediği
+                durumlarda kullanılır; arka planda toplanmaz ve sunucuya gönderilmez.
+              </li>
+              <li>
+                <strong>WRITE_EXTERNAL_STORAGE / READ_EXTERNAL_STORAGE (Android 9 ve altı):</strong>
+                Tarama raporlarını cihaz hafızasına kaydetmek için kullanılır.
+              </li>
+              <li>
+                <strong>VIBRATE:</strong> Önemli anomali tespit uyarıları için titreşim bildirimi.
+              </li>
+            </ul>
+            <div class="green-box">
+              Tüm izinler yalnızca açıklanan işlevler için kullanılır ve izni reddederseniz
+              yalnızca ilgili özellik devre dışı kalır; uygulamanın diğer işlevleri çalışmaya
+              devam eder.
+            </div>
+          </div>
+
+          <!-- 9. Üçüncü Taraf -->
+          <div id="ucuncu-taraf" class="policy-section reveal">
+            <h2><span class="sec-icon">🌐</span> 9. Üçüncü Taraf Hizmetler</h2>
+            <p>
+              Shadow View, mevcut sürümünde kullanıcı verilerini harici sunuculara ileten
+              üçüncü taraf analitik, reklam veya izleme SDK'sı kullanmamaktadır.
+            </p>
+
+            <h3>Google Play Hizmetleri</h3>
+            <p>
+              Uygulama, Google Play Store üzerinden dağıtılmaktadır. Uygulama dağıtımı ve
+              güncelleme sürecinde Google'ın standart Play Store politikaları geçerlidir.
+              Google'ın veri işleme politikası için:
+              <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer"
+                 style="color:var(--cyan)">policies.google.com/privacy</a>
+            </p>
+
+            <h3>Bağlantı Verilebilecek Harici Sayfalar</h3>
+            <p>
+              Uygulama içindeki "Yardım" veya "Hakkında" bölümleri golgeteknoloji.com web sitesine
+              yönlendiren bağlantılar içerebilir. Bu sayfaları ziyaret ettiğinizde ilgili sitenin
+              gizlilik politikası geçerli olur.
+            </p>
+          </div>
+
+          <!-- 10. Çocuklar -->
+          <div id="cocuklar" class="policy-section reveal">
+            <h2><span class="sec-icon">👶</span> 10. Çocukların Gizliliği</h2>
+            <p>
+              Shadow View, jeofizik araştırma ve manyetik ölçüm odaklı profesyonel bir uygulamadır.
+              13 yaşın altındaki çocuklara yönelik değildir ve bu yaş grubundan bilerek kişisel veri
+              toplanmaz.
+            </p>
+            <p>
+              13 yaşın altında bir çocuğun uygulamamızı kullandığından haberdar olursak,
+              söz konusu verileri derhal sileriz. Böyle bir durum fark ederseniz lütfen
+              <strong>teknolojigolge@gmail.com</strong> adresinden bize bildirin.
+            </p>
+          </div>
+
+          <!-- 11. Değişiklikler -->
+          <div id="degisiklikler" class="policy-section reveal">
+            <h2><span class="sec-icon">📝</span> 11. Politika Değişiklikleri</h2>
+            <p>
+              Bu Gizlilik Politikası zaman zaman güncellenebilir. Önemli değişiklikler için
+              kullanıcılar şu yollarla bilgilendirilir:
+            </p>
+            <ul>
+              <li>Google Play Store uygulama açıklamasında güncelleme notu</li>
+              <li>Uygulama içi bildirim (büyük değişiklikler için)</li>
+              <li>Bu sayfadaki "Son Güncelleme" tarihinin revize edilmesi</li>
+            </ul>
+            <p>
+              Güncellenmiş politikayı yayınladıktan sonra uygulamayı kullanmaya devam etmeniz,
+              yeni politikayı kabul ettiğiniz anlamına gelir.
+            </p>
+            <div class="gold-box">
+              <strong>Politika Tarihleri:</strong> Bu politikanın ilk yayın tarihi Şubat 2026'dır.
+              Tüm revizyon geçmişi talep halinde e-posta yoluyla paylaşılabilir.
+            </div>
+          </div>
+
+          <!-- 12. İletişim -->
+          <div id="iletisim" class="policy-section reveal">
+            <h2><span class="sec-icon">📬</span> 12. İletişim</h2>
+            <p>
+              Bu Gizlilik Politikası hakkında sorularınız, veri silme talepleriniz veya
+              gizlilikle ilgili endişeleriniz için aşağıdaki kanallardan bize ulaşabilirsiniz:
+            </p>
+            <table class="contact-table">
+              <tr>
+                <td>Şirket</td>
+                <td>Gölge Teknoloji</td>
+              </tr>
+              <tr>
+                <td>E-posta</td>
+                <td><a href="mailto:teknolojigolge@gmail.com">teknolojigolge@gmail.com</a></td>
+              </tr>
+              <tr>
+                <td>Telefon</td>
+                <td><a href="tel:+905400170054">+90 540 017 00 54</a></td>
+              </tr>
+              <tr>
+                <td>Web Sitesi</td>
+                <td><a href="index.html">golgeteknoloji.com</a></td>
+              </tr>
+              <tr>
+                <td>Yanıt Süresi</td>
+                <td>30 gün içinde</td>
+              </tr>
+            </table>
+          </div>
+
+        </div><!-- /.privacy-content -->
+      </div><!-- /.privacy-layout -->
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="container">
+      <div class="cta-box reveal">
+        <span class="section-label" style="justify-content:center;">Shadow View</span>
+        <h2 class="cta-title">Shadow View'ı Keşfedin</h2>
+        <p class="cta-desc">Manyetik alan verilerinizi gerçek zamanlı görselleştirin. Android cihazınızda ücretsiz başlayın.</p>
+        <div style="display:flex; gap:16px; justify-content:center; flex-wrap:wrap;">
+          <a href="shadow-view.html" class="btn btn-primary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+            Shadow View Hakkında
+          </a>
+          <a href="iletisim.html" class="btn" style="background:var(--bg-glass);border:1px solid var(--border-glass);color:var(--text-primary);backdrop-filter:blur(10px);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            İletişime Geç
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-brand-text">Gölge <span>Teknoloji</span></div>
+          <p class="footer-desc">Gölge Seninle, Keşif Senin Elinde.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Sayfalar</h4>
+          <ul>
+            <li><a href="index.html">Ana Sayfa</a></li>
+            <li><a href="urunler.html">Ürünler</a></li>
+            <li><a href="shadow-view.html">Shadow View</a></li>
+            <li><a href="hakkinda.html">Hakkında</a></li>
+            <li><a href="gradiometre-hakkinda.html">Gradiometre Hakkında</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Ürünler</h4>
+          <ul>
+            <li><a href="urunler.html#gravion">Shadow Gravion</a></li>
+            <li><a href="urunler.html#gradiometre">Shadow Gradiometre</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Yasal</h4>
+          <ul>
+            <li><a href="shadow-view-privacy.html">Shadow View Gizlilik</a></li>
+            <li><a href="iletisim.html">İletişim</a></li>
+            <li><a href="mailto:teknolojigolge@gmail.com">teknolojigolge@gmail.com</a></li>
+            <li><a href="tel:+905400170054">+90 540 017 00 54</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Gölge Teknoloji. Tüm hakları saklıdır.</span>
+        <div class="footer-social">
+          <a href="https://www.instagram.com/golge_teknoloji54" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+          </a>
+          <a href="https://www.facebook.com/people/Gölge-Şahin/pfbid02YoLfV1jC4AcH2RBykmioZxCBe2sCg8xGybieKEhtLKyEqLVEfskRKcp5o2JLeQUBl" aria-label="Facebook" target="_blank" rel="noopener noreferrer">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+
+    // Navbar scroll effect
+    const navbar = document.querySelector('.navbar');
+    function handleScroll() {
+      navbar.classList.toggle('scrolled', window.scrollY > 40);
+    }
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+
+    // Mobile menu toggle
+    const navToggle = document.querySelector('.nav-toggle');
+    const navLinks = document.querySelector('.nav-links');
+
+    if (navToggle) {
+      navToggle.addEventListener('click', () => {
+        navToggle.classList.toggle('active');
+        navLinks.classList.toggle('open');
+        document.body.style.overflow = navLinks.classList.contains('open') ? 'hidden' : '';
+      });
+
+      navLinks.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+          navToggle.classList.remove('active');
+          navLinks.classList.remove('open');
+          document.body.style.overflow = '';
+        });
+      });
+    }
+
+    // Reveal on scroll
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.05, rootMargin: '0px 0px -30px 0px' });
+
+    reveals.forEach(el => observer.observe(el));
+
+    // Active TOC highlight on scroll
+    const sections = document.querySelectorAll('.policy-section[id]');
+    const tocLinks = document.querySelectorAll('.privacy-toc a');
+
+    const sectionObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const id = entry.target.getAttribute('id');
+          tocLinks.forEach(link => {
+            link.style.color = '';
+            link.style.background = '';
+            if (link.getAttribute('href') === '#' + id) {
+              link.style.color = 'var(--cyan)';
+              link.style.background = 'var(--bg-glass-hover)';
+            }
+          });
+        }
+      });
+    }, {
+      rootMargin: `-${80}px 0px -60% 0px`,
+      threshold: 0
+    });
+
+    sections.forEach(sec => sectionObserver.observe(sec));
+
+  });
+  </script>
+</body>
+</html>

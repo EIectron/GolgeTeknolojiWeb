@@ -1,0 +1,1598 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gradiometre Hakkında — Shadow Gradiometre Sistemi | Gölge Teknoloji</title>
+  <meta name="description" content="Shadow Gradiometre Sistemi hakkında detaylı teknik bilgi. Fluxgate sensörlü profesyonel manyetik araştırma ve tespit çözümü.">
+  <style>
+/* ============================================
+   GÖLGE TEKNOLOJİ — Futuristic Dark Theme
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Exo+2:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap');
+
+/* === CSS Variables === */
+:root {
+  --bg-deep: #050810;
+  --bg-primary: #0a0e1a;
+  --bg-card: rgba(12, 18, 40, 0.6);
+  --bg-glass: rgba(255, 255, 255, 0.03);
+  --bg-glass-hover: rgba(255, 255, 255, 0.07);
+  --border-glass: rgba(255, 255, 255, 0.08);
+  --border-glow: rgba(0, 240, 255, 0.15);
+
+  --cyan: #00f0ff;
+  --cyan-dim: #00a8b3;
+  --cyan-glow: rgba(0, 240, 255, 0.3);
+  --gold: #f0c040;
+  --gold-dim: #c49a20;
+  --gold-glow: rgba(240, 192, 64, 0.3);
+  --purple: #8b5cf6;
+  --purple-glow: rgba(139, 92, 246, 0.3);
+  --red-accent: #ff4060;
+  --green-accent: #48bb78;
+
+  --text-primary: #e8ecf4;
+  --text-secondary: rgba(232, 236, 244, 0.6);
+  --text-muted: rgba(232, 236, 244, 0.35);
+
+  --font-display: 'Orbitron', sans-serif;
+  --font-heading: 'Rajdhani', sans-serif;
+  --font-body: 'Exo 2', sans-serif;
+
+  --nav-height: 80px;
+  --max-width: 1280px;
+  --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* === Reset & Base === */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: var(--cyan-dim) var(--bg-deep);
+}
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-deep); }
+::-webkit-scrollbar-thumb { background: var(--cyan-dim); border-radius: 3px; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg-deep);
+  color: var(--text-primary);
+  line-height: 1.7;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; display: block; }
+button { cursor: pointer; font-family: inherit; }
+
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* === Animated Background === */
+.bg-grid {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, black 20%, transparent 70%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, black 20%, transparent 70%);
+}
+
+.bg-orbs {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.bg-orbs .orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  opacity: 0.12;
+  animation: orbFloat 20s ease-in-out infinite;
+}
+
+.bg-orbs .orb:nth-child(1) {
+  width: 600px; height: 600px;
+  background: var(--cyan);
+  top: -10%; left: -10%;
+  animation-delay: 0s;
+}
+
+.bg-orbs .orb:nth-child(2) {
+  width: 500px; height: 500px;
+  background: var(--purple);
+  bottom: -15%; right: -10%;
+  animation-delay: -7s;
+}
+
+.bg-orbs .orb:nth-child(3) {
+  width: 400px; height: 400px;
+  background: var(--gold);
+  top: 40%; right: 20%;
+  animation-delay: -14s;
+}
+
+@keyframes orbFloat {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(40px, -30px) scale(1.05); }
+  66% { transform: translate(-20px, 20px) scale(0.95); }
+}
+
+/* === Navigation === */
+.navbar {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%;
+  height: var(--nav-height);
+  z-index: 1000;
+  transition: var(--transition);
+  backdrop-filter: blur(0px);
+  border-bottom: 1px solid transparent;
+}
+
+.navbar.scrolled {
+  background: rgba(5, 8, 16, 0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border-glass);
+}
+
+.navbar .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.nav-brand img {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  object-fit: contain;
+}
+
+.nav-brand-text {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+.nav-brand-text span { color: var(--cyan); }
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  list-style: none;
+}
+
+.nav-links a {
+  padding: 8px 16px;
+  font-family: var(--font-heading);
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  transition: var(--transition);
+  position: relative;
+  border-radius: 8px;
+}
+
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: var(--cyan);
+  transition: var(--transition);
+  transform: translateX(-50%);
+  border-radius: 1px;
+  box-shadow: 0 0 8px var(--cyan-glow);
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+  color: var(--text-primary);
+}
+
+.nav-links a:hover::after,
+.nav-links a.active::after {
+  width: 60%;
+}
+
+.nav-cta {
+  padding: 10px 24px !important;
+  background: linear-gradient(135deg, var(--cyan-dim), var(--cyan)) !important;
+  color: var(--bg-deep) !important;
+  border-radius: 8px !important;
+  font-weight: 700 !important;
+  box-shadow: 0 0 20px var(--cyan-glow);
+  transition: var(--transition) !important;
+}
+
+.nav-cta:hover {
+  box-shadow: 0 0 30px var(--cyan-glow), 0 4px 20px rgba(0,0,0,0.3) !important;
+  transform: translateY(-1px);
+}
+
+.nav-cta::after { display: none !important; }
+
+/* Mobile menu */
+.nav-toggle {
+  display: none;
+  background: none;
+  border: none;
+  width: 36px;
+  height: 36px;
+  position: relative;
+  z-index: 1001;
+}
+
+.nav-toggle span {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: var(--text-primary);
+  margin: 6px auto;
+  transition: var(--transition);
+  border-radius: 2px;
+}
+
+.nav-toggle.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+.nav-toggle.active span:nth-child(2) { opacity: 0; }
+.nav-toggle.active span:nth-child(3) { transform: rotate(-45deg) translate(6px, -6px); }
+
+/* === Buttons === */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 32px;
+  font-family: var(--font-heading);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  border: none;
+  border-radius: 10px;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--cyan-dim), var(--cyan));
+  color: var(--bg-deep);
+  box-shadow: 0 0 25px var(--cyan-glow), 0 4px 15px rgba(0,0,0,0.3);
+}
+
+.btn-primary:hover {
+  box-shadow: 0 0 40px var(--cyan-glow), 0 8px 25px rgba(0,0,0,0.4);
+  transform: translateY(-2px);
+}
+
+.btn svg { width: 18px; height: 18px; }
+
+/* === Section Common === */
+.section {
+  position: relative;
+  z-index: 1;
+  padding: 80px 0;
+}
+
+.section-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--cyan);
+  margin-bottom: 16px;
+}
+
+.section-label::before {
+  content: '';
+  width: 30px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--cyan), transparent);
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(24px, 3.5vw, 40px);
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: 16px;
+}
+
+/* === Glass Card === */
+.glass-card {
+  background: var(--bg-glass);
+  border: 1px solid var(--border-glass);
+  border-radius: 20px;
+  backdrop-filter: blur(15px);
+  padding: 32px;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.2), transparent);
+}
+
+.glass-card:hover {
+  background: var(--bg-glass-hover);
+  border-color: var(--border-glow);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 0 30px rgba(0, 240, 255, 0.05);
+}
+
+/* === CTA Section === */
+.cta-section {
+  text-align: center;
+  padding: 80px 0;
+}
+
+.cta-box {
+  background: linear-gradient(135deg, rgba(0, 240, 255, 0.05), rgba(139, 92, 246, 0.05));
+  border: 1px solid var(--border-glass);
+  border-radius: 32px;
+  padding: 64px 48px;
+  position: relative;
+  overflow: hidden;
+}
+
+.cta-box::before {
+  content: '';
+  position: absolute;
+  top: -1px; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--cyan), var(--gold), transparent);
+}
+
+.cta-title {
+  font-family: var(--font-display);
+  font-size: clamp(22px, 3vw, 36px);
+  font-weight: 800;
+  margin-bottom: 16px;
+}
+
+.cta-desc {
+  font-size: 17px;
+  color: var(--text-secondary);
+  max-width: 500px;
+  margin: 0 auto 32px;
+  line-height: 1.8;
+}
+
+/* === Footer === */
+.footer {
+  position: relative;
+  z-index: 1;
+  border-top: 1px solid var(--border-glass);
+  padding: 64px 0 32px;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 48px;
+  margin-bottom: 48px;
+}
+
+.footer-brand-text {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  margin-bottom: 12px;
+}
+
+.footer-brand-text span { color: var(--cyan); }
+
+.footer-desc {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  max-width: 320px;
+}
+
+.footer-col h4 {
+  font-family: var(--font-heading);
+  font-size: 15px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 16px;
+  color: var(--text-primary);
+}
+
+.footer-col ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.footer-col a {
+  font-size: 14px;
+  color: var(--text-secondary);
+  transition: var(--transition);
+}
+
+.footer-col a:hover { color: var(--cyan); }
+
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 32px;
+  border-top: 1px solid var(--border-glass);
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.footer-social {
+  display: flex;
+  gap: 12px;
+}
+
+.footer-social a {
+  width: 36px; height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: var(--bg-glass);
+  border: 1px solid var(--border-glass);
+  color: var(--text-secondary);
+  transition: var(--transition);
+}
+
+.footer-social a:hover {
+  border-color: var(--cyan-dim);
+  color: var(--cyan);
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.1);
+}
+
+/* === Page Header === */
+.page-header {
+  position: relative;
+  padding: 160px 0 80px;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.page-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-glass), transparent);
+}
+
+.page-header h1 {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 4.5vw, 52px);
+  font-weight: 800;
+  margin-bottom: 16px;
+}
+
+.page-header .gradient-text {
+  background: linear-gradient(135deg, var(--cyan), var(--gold));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.page-header p {
+  font-size: 18px;
+  color: var(--text-secondary);
+  max-width: 600px;
+  line-height: 1.8;
+}
+
+/* === Animations === */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+
+/* === Glowing Separator === */
+.glow-line {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--cyan-dim), transparent);
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+/* ============================================
+   PAGE-SPECIFIC STYLES
+   ============================================ */
+
+/* Stats bar */
+.specs-bar {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 48px;
+}
+
+.spec-card {
+  background: var(--bg-glass);
+  border: 1px solid var(--border-glass);
+  border-radius: 16px;
+  padding: 24px 20px;
+  text-align: center;
+  transition: var(--transition);
+}
+
+.spec-card:hover {
+  border-color: var(--border-glow);
+  background: var(--bg-glass-hover);
+}
+
+.spec-card .spec-value {
+  font-family: var(--font-display);
+  font-size: clamp(18px, 2.5vw, 26px);
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--cyan), var(--gold));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1.2;
+  margin-bottom: 6px;
+}
+
+.spec-card .spec-label {
+  font-family: var(--font-heading);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
+/* Content card */
+.content-card {
+  background: var(--bg-glass);
+  border: 1px solid var(--border-glass);
+  border-radius: 20px;
+  padding: 40px;
+  margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
+  transition: var(--transition);
+}
+
+.content-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 4px; height: 100%;
+  background: linear-gradient(180deg, var(--cyan), var(--purple));
+  border-radius: 0 0 0 20px;
+}
+
+.content-card:hover {
+  border-color: var(--border-glow);
+  transform: translateX(4px);
+}
+
+.content-card h2 {
+  font-family: var(--font-display);
+  font-size: clamp(18px, 2.5vw, 24px);
+  font-weight: 700;
+  color: var(--cyan);
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border-glass);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.content-card h2 .num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  background: linear-gradient(135deg, var(--cyan-dim), var(--cyan));
+  color: var(--bg-deep);
+  border-radius: 50%;
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.content-card h3 {
+  font-family: var(--font-heading);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--gold);
+  margin: 24px 0 12px 0;
+}
+
+.content-card p {
+  font-size: 15px;
+  color: var(--text-secondary);
+  line-height: 1.8;
+  margin-bottom: 12px;
+}
+
+/* Feature list */
+.feat-list {
+  list-style: none;
+  padding: 0;
+}
+
+.feat-list li {
+  padding: 12px 0 12px 32px;
+  position: relative;
+  border-bottom: 1px solid var(--border-glass);
+  font-size: 15px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.feat-list li:last-child { border-bottom: none; }
+
+.feat-list li::before {
+  content: '▸';
+  position: absolute;
+  left: 8px;
+  color: var(--cyan);
+  font-size: 14px;
+  top: 13px;
+}
+
+.feat-list li strong {
+  color: var(--text-primary);
+}
+
+/* Numbered list */
+.numbered-list {
+  counter-reset: item;
+  list-style: none;
+  padding: 0;
+}
+
+.numbered-list li {
+  padding: 16px 0 16px 56px;
+  position: relative;
+  border-bottom: 1px solid var(--border-glass);
+  font-size: 15px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+.numbered-list li:last-child { border-bottom: none; }
+
+.numbered-list li::before {
+  counter-increment: item;
+  content: counter(item);
+  position: absolute;
+  left: 0; top: 12px;
+  width: 32px; height: 32px;
+  background: linear-gradient(135deg, var(--cyan-dim), var(--cyan));
+  color: var(--bg-deep);
+  border-radius: 50%;
+  text-align: center;
+  line-height: 32px;
+  font-weight: 800;
+  font-size: 14px;
+  font-family: var(--font-display);
+}
+
+.numbered-list li strong { color: var(--text-primary); }
+
+/* Highlight box */
+.highlight-box {
+  background: linear-gradient(135deg, rgba(0, 240, 255, 0.06), rgba(139, 92, 246, 0.06));
+  border: 1px solid rgba(0, 240, 255, 0.12);
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin: 20px 0;
+  border-left: 3px solid var(--cyan);
+  font-size: 15px;
+  color: var(--text-secondary);
+  line-height: 1.8;
+}
+
+.highlight-box strong { color: var(--cyan); }
+
+/* Warning box */
+.warning-box {
+  background: rgba(240, 192, 64, 0.06);
+  border: 1px solid rgba(240, 192, 64, 0.15);
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin: 16px 0;
+  border-left: 3px solid var(--gold);
+  font-size: 15px;
+  color: var(--text-secondary);
+  line-height: 1.8;
+}
+
+.warning-box .warn-title {
+  color: var(--gold);
+  font-weight: 700;
+  font-family: var(--font-heading);
+  font-size: 16px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Data table */
+.data-table-wrapper {
+  overflow-x: auto;
+  border-radius: 16px;
+  margin: 20px 0;
+  border: 1px solid var(--border-glass);
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.data-table thead th {
+  background: linear-gradient(135deg, rgba(0,240,255,0.1), rgba(139,92,246,0.1));
+  color: var(--cyan);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-size: 12px;
+  padding: 16px 20px;
+  text-align: left;
+  border-bottom: 1px solid var(--border-glow);
+}
+
+.data-table tbody td {
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border-glass);
+  color: var(--text-secondary);
+  vertical-align: top;
+}
+
+.data-table tbody tr:last-child td { border-bottom: none; }
+
+.data-table tbody tr:hover td {
+  background: var(--bg-glass);
+  color: var(--text-primary);
+}
+
+.data-table .positive td { background: rgba(72, 187, 120, 0.04); }
+.data-table .negative td { background: rgba(255, 64, 96, 0.04); }
+.data-table .positive:hover td { background: rgba(72, 187, 120, 0.08) !important; }
+.data-table .negative:hover td { background: rgba(255, 64, 96, 0.08) !important; }
+
+.badge-pos {
+  display: inline-block;
+  padding: 3px 10px;
+  background: rgba(72, 187, 120, 0.15);
+  border: 1px solid rgba(72, 187, 120, 0.3);
+  border-radius: 50px;
+  color: var(--green-accent);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.badge-neg {
+  display: inline-block;
+  padding: 3px 10px;
+  background: rgba(255, 64, 96, 0.12);
+  border: 1px solid rgba(255, 64, 96, 0.25);
+  border-radius: 50px;
+  color: var(--red-accent);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* Comparison cards */
+.compare-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin: 20px 0;
+}
+
+.compare-card {
+  background: rgba(0,0,0,0.3);
+  border-radius: 14px;
+  padding: 24px;
+  border: 1px solid var(--border-glass);
+}
+
+.compare-card.bad { border-left: 3px solid var(--red-accent); }
+.compare-card.good { border-left: 3px solid var(--green-accent); }
+
+.compare-card h4 {
+  font-family: var(--font-heading);
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.compare-card.bad h4 { color: var(--red-accent); }
+.compare-card.good h4 { color: var(--green-accent); }
+
+.compare-card p {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+/* Truth / SSS items */
+.sss-card {
+  background: linear-gradient(135deg, rgba(240,192,64,0.04), rgba(255,64,96,0.04));
+  border: 1px solid rgba(240,192,64,0.15);
+  border-radius: 20px;
+  padding: 40px;
+  margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.sss-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 4px; height: 100%;
+  background: linear-gradient(180deg, var(--gold), var(--red-accent));
+}
+
+.sss-card h2 {
+  font-family: var(--font-display);
+  font-size: clamp(16px, 2vw, 22px);
+  font-weight: 700;
+  color: var(--gold);
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(240,192,64,0.15);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sss-card h3 {
+  font-family: var(--font-heading);
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--gold);
+  margin: 20px 0 12px;
+}
+
+.sss-card p {
+  font-size: 15px;
+  color: var(--text-secondary);
+  line-height: 1.8;
+  margin-bottom: 12px;
+}
+
+.truth-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border-glass);
+  font-size: 15px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.truth-item:last-child { border-bottom: none; }
+
+.truth-item .t-icon {
+  font-size: 1.2rem;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* Flow chart */
+.flow-chart {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin: 24px 0;
+}
+
+.flow-step {
+  background: rgba(0, 240, 255, 0.06);
+  border: 1px solid rgba(0, 240, 255, 0.15);
+  border-radius: 10px;
+  padding: 14px 28px;
+  text-align: center;
+  min-width: 260px;
+  max-width: 400px;
+  width: 100%;
+  font-size: 14px;
+  color: var(--text-primary);
+  font-family: var(--font-heading);
+  font-weight: 500;
+}
+
+.flow-arrow {
+  color: var(--cyan);
+  font-size: 20px;
+  opacity: 0.7;
+}
+
+/* Section header group */
+.section-header {
+  margin-bottom: 48px;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+  .specs-bar { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 768px) {
+  :root { --nav-height: 64px; }
+
+  .nav-links {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100vh;
+    background: rgba(5, 8, 16, 0.98);
+    backdrop-filter: blur(30px);
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    z-index: 999;
+  }
+
+  .nav-links.open { display: flex; }
+  .nav-links a { font-size: 18px; padding: 12px 24px; }
+  .nav-toggle { display: block; }
+
+  .section { padding: 60px 0; }
+  .page-header { padding: 120px 0 60px; }
+  .footer-grid { grid-template-columns: 1fr; gap: 32px; }
+  .footer-bottom { flex-direction: column; gap: 16px; text-align: center; }
+  .cta-box { padding: 40px 24px; }
+  .specs-bar { grid-template-columns: repeat(2, 1fr); }
+  .compare-grid { grid-template-columns: 1fr; }
+  .content-card { padding: 28px 24px; }
+  .sss-card { padding: 28px 24px; }
+}
+
+@media (max-width: 480px) {
+  .container { padding: 0 16px; }
+  .specs-bar { grid-template-columns: 1fr 1fr; }
+}
+</style>
+  <link rel="icon" type="image/png" href="images/ShadowLogo2.png">
+</head>
+<body>
+
+  <div class="bg-grid"></div>
+  <div class="bg-orbs">
+    <div class="orb"></div>
+    <div class="orb"></div>
+    <div class="orb"></div>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="container">
+      <a href="index.html" class="nav-brand">
+        <img src="images/ShadowLogo2.png" alt="Shadow Logo">
+        <div class="nav-brand-text">Gölge <span>Teknoloji</span></div>
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html">Ana Sayfa</a></li>
+        <li><a href="urunler.html">Ürünler</a></li>
+        <li><a href="shadow-view.html">Shadow View</a></li>
+        <li><a href="hakkinda.html">Hakkında</a></li>
+        <li><a href="iletisim.html" class="nav-cta">İletişim</a></li>
+      </ul>
+      <button class="nav-toggle" aria-label="Menü">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Page Header -->
+  <header class="page-header">
+    <div class="container">
+      <span class="section-label">Shadow Gradiometre Sistemi</span>
+      <h1>Gradiometre <span class="gradient-text">Hakkında</span></h1>
+      <p>Profesyonel manyetik araştırma ve yeraltı tespit çözümü. Fluxgate sensör teknolojisiyle sahada fark yaratın.</p>
+    </div>
+  </header>
+
+  <!-- Specs Bar -->
+  <section class="section" style="padding-top: 40px; padding-bottom: 40px;">
+    <div class="container">
+      <div class="specs-bar reveal">
+        <div class="spec-card">
+          <div class="spec-value">Fluxgate</div>
+          <div class="spec-label">Sensör Tipi</div>
+        </div>
+        <div class="spec-card">
+          <div class="spec-value">±100 µT</div>
+          <div class="spec-label">Ölçüm Aralığı</div>
+        </div>
+        <div class="spec-card">
+          <div class="spec-value">±50 nT</div>
+          <div class="spec-label">Hassasiyet</div>
+        </div>
+        <div class="spec-card">
+          <div class="spec-value">1000 Hz</div>
+          <div class="spec-label">Örnekleme Hızı</div>
+        </div>
+        <div class="spec-card">
+          <div class="spec-value">24-bit</div>
+          <div class="spec-label">ADC Çözünürlük</div>
+        </div>
+        <div class="spec-card">
+          <div class="spec-value">0–5 m</div>
+          <div class="spec-label">Tespit Derinliği</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="glow-line"></div>
+
+  <!-- 1. Gradiometre Nedir -->
+  <section class="section">
+    <div class="container">
+      <div class="content-card reveal">
+        <h2><span class="num">1</span> Gradiometre Nedir?</h2>
+        <p>
+          Manyetik gradiometre, yer altındaki nesnelerin ve yapıların oluşturduğu manyetik alan değişimlerini
+          (gradyanlarını) ölçen hassas bir jeofizik cihazıdır. Tek sensörlü manyetometrelerden farklı olarak,
+          gradiometreler iki sensör kullanarak manyetik alanın <strong style="color: var(--text-primary)">dikey gradyanını (dBz/dz)</strong> ölçer.
+        </p>
+        <p>
+          Bu sayede çevresel manyetik gürültülerden etkilenmeden daha net ve hassas sonuçlar elde edilir.
+          Dünya'nın manyetik alanındaki günlük değişimler otomatik olarak kompanse edildiği için
+          yalnızca yeraltı anomalileri ön plana çıkar.
+        </p>
+        <div class="highlight-box">
+          <strong>Shadow sistemi</strong> manyetik alan farkını (gradyanı) ölçer. Bu fark, yeraltındaki
+          anomalilerin hem varlığını hem de yaklaşık derinliğini belirlemeye olanak tanır. İki fluxgate
+          sensör arasındaki mesafe, tespit hassasiyetini ve derinlik kapasitesini doğrudan belirler.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="glow-line"></div>
+
+  <!-- 2. Ne Ölçer -->
+  <section class="section">
+    <div class="container">
+      <div class="content-card reveal">
+        <h2><span class="num">2</span> Ne Ölçer?</h2>
+
+        <h3>Ölçüm Parametreleri</h3>
+        <ul class="feat-list">
+          <li><strong>Manyetik Gradyan (dBz/dz):</strong> Mikrotesla (µT) cinsinden dikey manyetik alan değişimi</li>
+          <li><strong>Ölçüm Hassasiyeti:</strong> ±50 nT yüksek hassasiyet — ucuz sensörlere kıyasla 20–100 kat daha iyi</li>
+          <li><strong>Ölçüm Aralığı:</strong> ±100 µT tam ölçüm menzili</li>
+          <li><strong>Örnekleme Hızı:</strong> 1000 Hz — saniyede 1000 bağımsız ölçüm</li>
+          <li><strong>ADC Çözünürlüğü:</strong> 24-bit — 16 milyondan fazla seviye, mikrovolt değişimleri yakalar</li>
+        </ul>
+
+        <h3>Tespit Edilen Anomali Türleri</h3>
+        <div class="data-table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Anomali Tipi</th>
+                <th>Gradyan Değeri</th>
+                <th>Olası Kaynaklar</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="positive">
+                <td><span class="badge-pos">Güçlü Pozitif</span></td>
+                <td>+0.5 µT üstü</td>
+                <td>Yüzeye yakın demir obje, büyük metalik kap, demir boru</td>
+              </tr>
+              <tr class="positive">
+                <td><span class="badge-pos">Orta Pozitif</span></td>
+                <td>+0.2 ile +0.5 µT</td>
+                <td>Orta derinlikte metal, bronz/bakır, pişmiş toprak</td>
+              </tr>
+              <tr class="negative">
+                <td><span class="badge-neg">Güçlü Negatif</span></td>
+                <td>-0.5 µT altı</td>
+                <td>Sığ boşluk, mezar odası, tünel ağzı, sarnıç</td>
+              </tr>
+              <tr class="negative">
+                <td><span class="badge-neg">Orta Negatif</span></td>
+                <td>-0.2 ile -0.5 µT</td>
+                <td>Orta derinlikte boşluk, çürümüş organik, eski dolgu</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="glow-line"></div>
+
+  <!-- 3. Neyi Görür -->
+  <section class="section">
+    <div class="container">
+      <div class="content-card reveal">
+        <h2><span class="num">3</span> Neyi Görür?</h2>
+        <p>Shadow gradiometre sistemi, yeraltındaki manyetik özellik farklılıklarını görselleştirir. Sistem şunları tespit edebilir:</p>
+
+        <h3>🔩 Metal ve Metalik Objeler</h3>
+        <ul class="feat-list">
+          <li>Demir, çelik, bakır, bronz ve diğer ferromanyetik metaller</li>
+          <li>Tarihi sikkeler, mücevher koleksiyonları ve değerli metal birikintilerini içeren kaplar</li>
+          <li>Gömülü metal kaplar, sandıklar ve kasalar</li>
+          <li>Eski silahlar, araç parçaları ve endüstriyel metal kalıntılar</li>
+        </ul>
+
+        <h3>🏛️ Boşluklar ve Yapılar</h3>
+        <ul class="feat-list">
+          <li>Yeraltı odaları, mezar odaları ve mahzenler (manyetik içerik barındırıyorsa)</li>
+          <li>Tüneller, galeriler ve su kanalları</li>
+          <li>Sarnıçlar, kuyular ve depolama alanları</li>
+          <li>Duvar temelleri ve pişmiş tuğla yapı kalıntıları</li>
+        </ul>
+
+        <h3>🏺 Arkeolojik Yapılar</h3>
+        <ul class="feat-list">
+          <li>Yanmış toprak izleri — ocak, fırın ve ateş kalıntılarının yerini belirler</li>
+          <li>Pişmiş toprak ve seramik birikintileri</li>
+          <li>Hendekler ve savunma yapısı kalıntıları</li>
+          <li>Yerleşim alanı sınırları ve kültür katmanları</li>
+        </ul>
+
+        <div class="highlight-box">
+          <strong>Derinlik Kapasitesi:</strong> Zemin koşullarına bağlı olarak 0–5 metre arası etkili tespit
+          derinliği. Shadow gradiometre gelişmiş fluxgate sensörleriyle 40–50 cm derinliğe kadar en yüksek
+          hassasiyeti, 2–3 metre derinliğe kadar güçlü anomali tespiti sağlar.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="glow-line"></div>
+
+  <!-- 4. Nerelerde Kullanılır -->
+  <section class="section">
+    <div class="container">
+      <div class="content-card reveal">
+        <h2><span class="num">4</span> Nerelerde Kullanılır?</h2>
+        <ol class="numbered-list">
+          <li><strong>Arkeolojik Araştırmalar:</strong> Kazı öncesi geniş alan taraması, yapı kalıntılarının haritalanması, mezar alanlarının ve yerleşim bölgelerinin tespiti</li>
+          <li><strong>Define ve Hazine Araştırması:</strong> Gömülü ferromanyetik metallerin tespiti, tarihi eser araştırmaları, boşluk ve yapı oda tespiti</li>
+          <li><strong>Jeolojik Araştırmalar:</strong> Fay hatlarının belirlenmesi, manyetik mineral damarlarının tespiti, jeolojik yapı haritalama</li>
+          <li><strong>İnşaat ve Mühendislik:</strong> Gömülü altyapı tespiti, demir boru ve kablo lokasyonu, temel araştırmaları</li>
+          <li><strong>Adli Araştırmalar:</strong> İşaretsiz mezar tespiti, gömülü delil ve nesne araştırmaları</li>
+          <li><strong>Patlayıcı Madde Tespiti (UXO):</strong> Gömülü mühimmat, top mermisi ve patlayıcı madde araştırmaları — tarihî savaş alanlarında özellikle etkin</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <div class="glow-line"></div>
+
+  <!-- 5. Karşılaştırma -->
+  <section class="section">
+    <div class="container">
+      <div class="content-card reveal">
+        <h2><span class="num">5</span> Diğer Sistemlerle Karşılaştırma</h2>
+        <p style="color: var(--text-secondary); margin-bottom: 28px;">Piyasadaki ürünlerle farkımız — sensörden yazılıma her detayda:</p>
+
+        <h3>📡 Sensör Kalitesi</h3>
+        <div class="compare-grid">
+          <div class="compare-card bad">
+            <h4>❌ Piyasadaki Cihazlar</h4>
+            <p>LIS3MDL, HMC5883L, QMC5883L gibi ucuz MEMS / Hall-effect sensörler. Pusula uygulamaları için tasarlanmış, 1000–5000 nT hassasiyet. Çoğu tek sensörlüdür — gerçek gradiometre bile değildir.</p>
+          </div>
+          <div class="compare-card good">
+            <h4>✅ Shadow Sistemi</h4>
+            <p>Endüstriyel sınıf Ferroxcube fluxgate sensörler. Jeofizik ölçüm için özel üretim. ±50 nT hassasiyetle ucuz sensörlere göre 20–100 kat daha net ölçüm. Sıcaklık kompanzasyonlu kararlı çıkış.</p>
+          </div>
+        </div>
+
+        <h3>⚖️ Gerçek Gradiometre mi?</h3>
+        <div class="compare-grid">
+          <div class="compare-card bad">
+            <h4>❌ Piyasadaki Cihazlar</h4>
+            <p>Çoğu tek sensörlü manyetometredir. İki sensör kullananlar bile 5–10 cm gibi çok kısa mesafeli olduğundan etkili gradyan ölçümü yapamaz. Dünya alanındaki günlük değişimlerden etkilenir.</p>
+          </div>
+          <div class="compare-card good">
+            <h4>✅ Shadow Sistemi</h4>
+            <p>Optimum aralıklı iki fluxgate sensörle gerçek dikey gradyan (dBz/dz) ölçümü. Sığ ve orta derinlikteki hedefler için optimize edilmiş. Çevresel manyetik gürültü otomatik elimine edilir.</p>
+          </div>
+        </div>
+
+        <h3>🔧 Sinyal İşleme</h3>
+        <div class="compare-grid">
+          <div class="compare-card bad">
+            <h4>❌ Piyasadaki Cihazlar</h4>
+            <p>Genellikle 10–12 bit ADC (1024–4096 seviye). Ham veri gösterilir ya da basit ortalama alınır. Küçük anomaliler gürültü içinde kaybolur.</p>
+          </div>
+          <div class="compare-card good">
+            <h4>✅ Shadow Sistemi</h4>
+            <p>24-bit ADC ile 16 milyondan fazla çözünürlük seviyesi. Güçlü dijital filtreleme ile gürültü bastırma. Mikrovolt seviyesindeki değişimler bile algılanır.</p>
+          </div>
+        </div>
+
+        <h3>💻 Yazılım ve Analiz</h3>
+        <div class="compare-grid">
+          <div class="compare-card bad">
+            <h4>❌ Piyasadaki Cihazlar</h4>
+            <p>Basit sayısal gösterge veya ilkel grafik. Veri kaydı sınırlı ya da yok. Analiz için harici yazılım gerektirir.</p>
+          </div>
+          <div class="compare-card good">
+            <h4>✅ Shadow Sistemi</h4>
+            <p>ShadowView Android uygulamasıyla anlık 2D/3D/4D görselleştirme. ShadowAI destekli otomatik anomali yorumlama. CSV ve HTML formatlarında veri aktarımı.</p>
+          </div>
+        </div>
+
+        <h3 style="margin-top: 32px;">📊 Özet Karşılaştırma</h3>
+        <div class="data-table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Özellik</th>
+                <th>Ucuz Cihazlar</th>
+                <th>Shadow Sistemi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong style="color: var(--text-primary)">Sensör Tipi</strong></td>
+                <td>MEMS / Hall (LIS3MDL, HMC58xx)</td>
+                <td style="color: var(--cyan)">Fluxgate</td>
+              </tr>
+              <tr>
+                <td><strong style="color: var(--text-primary)">Hassasiyet</strong></td>
+                <td>1000–5000 nT</td>
+                <td style="color: var(--cyan)">±50 nT</td>
+              </tr>
+              <tr>
+                <td><strong style="color: var(--text-primary)">ADC</strong></td>
+                <td>10–12 bit</td>
+                <td style="color: var(--cyan)">24-bit</td>
+              </tr>
+              <tr>
+                <td><strong style="color: var(--text-primary)">Gerçek Gradiometre</strong></td>
+                <td>Hayır (çoğu)</td>
+                <td style="color: var(--green-accent)">Evet</td>
+              </tr>
+              <tr>
+                <td><strong style="color: var(--text-primary)">Boşluk Tespiti</strong></td>
+                <td>Yapamaz</td>
+                <td style="color: var(--green-accent)">Kısmi mümkün</td>
+              </tr>
+              <tr>
+                <td><strong style="color: var(--text-primary)">Etkili Derinlik</strong></td>
+                <td>20–50 cm</td>
+                <td style="color: var(--cyan)">3–5 m</td>
+              </tr>
+              <tr>
+                <td><strong style="color: var(--text-primary)">AI Analiz</strong></td>
+                <td>Yok</td>
+                <td style="color: var(--cyan)">ShadowAI</td>
+              </tr>
+              <tr>
+                <td><strong style="color: var(--text-primary)">3D Görselleştirme</strong></td>
+                <td>Yok</td>
+                <td style="color: var(--green-accent)">Var</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="glow-line"></div>
+
+  <!-- 6. Avantajlar -->
+  <section class="section">
+    <div class="container">
+      <div class="content-card reveal">
+        <h2><span class="num">6</span> Shadow Sisteminin Avantajları</h2>
+        <ol class="numbered-list">
+          <li><strong>Entegre AI Analiz:</strong> ShadowAI ile otomatik anomali yorumlama ve derinlik tahmini. Profesyonel düzeyde analiz raporu oluşturma — sahada anında sonuç.</li>
+          <li><strong>Gerçek Zamanlı Görselleştirme:</strong> Ölçüm anında 2D ısı haritası, 3D yüzey ve 4D katmanlı görünüm. İnteraktif grafikler, pinch-to-zoom, döndürme.</li>
+          <li><strong>Mobil Uygulama:</strong> Android tabanlı ShadowView uygulaması ile tam sahada çalışma kapasitesi. Dizüstü bilgisayar veya ekstra donanım gerekmez.</li>
+          <li><strong>Kablosuz Bağlantı:</strong> WiFi üzerinden anlık veri aktarımı. Kablo karmaşası yok, hareket özgürlüğü tam.</li>
+          <li><strong>Kolay Kalibrasyon:</strong> Tek tuşla otomatik kalibrasyon. Saha öncesi kurulum birkaç saniyede tamamlanır.</li>
+          <li><strong>Uzun Pil Ömrü:</strong> Şarj edilebilir lityum pil ile 8+ saat kesintisiz saha çalışması.</li>
+          <li><strong>Veri Dışa Aktarma:</strong> CSV, HTML rapor ve görsel formatlarında veri kaydetme ve paylaşma. Arşivleme ve profesyonel raporlama kolaylaşır.</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <div class="glow-line"></div>
+
+  <!-- SSS -->
+  <section class="section">
+    <div class="container">
+      <div class="sss-card reveal">
+        <h2>⚠️ SSS — Sıkça Sorulan Sorular</h2>
+
+        <h3>🔍 İnternetteki "5m Derinlik" İddiaları — Gerçek vs Pazarlama</h3>
+        <div class="data-table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Ne Gösteriyorlar</th>
+                <th>Gerçekte Ne Tespit Ediliyor</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>"5m derinlikte mezar"</td>
+                <td><strong style="color:var(--text-primary)">Demir çivi veya silah içeren mezar</strong></td>
+              </tr>
+              <tr>
+                <td>"Hazine odası"</td>
+                <td><strong style="color:var(--text-primary)">Demir kapı, menteşe veya pişmiş tuğla</strong></td>
+              </tr>
+              <tr>
+                <td>"Antik oda"</td>
+                <td><strong style="color:var(--text-primary)">Yanmış / ısıtılmış zemin veya duvar</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>📊 Sayılarla Kanıt (5m derinlikte)</h3>
+        <div style="margin: 8px 0;">
+          <div class="truth-item">
+            <span class="t-icon" style="color:var(--red-accent)">❌</span>
+            <span>Boş mezar çukuru → 0 nT &nbsp;<strong style="color:var(--red-accent)">(GÖRÜLEMİYOR)</strong></span>
+          </div>
+          <div class="truth-item">
+            <span class="t-icon" style="color:var(--red-accent)">❌</span>
+            <span>Taş lahit → 0 nT &nbsp;<strong style="color:var(--red-accent)">(GÖRÜLEMİYOR)</strong></span>
+          </div>
+          <div class="truth-item">
+            <span class="t-icon" style="color:var(--red-accent)">❌</span>
+            <span>Altın / Gümüş → 0 nT &nbsp;<strong style="color:var(--red-accent)">(GÖRÜLEMİYOR)</strong></span>
+          </div>
+          <div class="truth-item">
+            <span class="t-icon" style="color:var(--green-accent)">✅</span>
+            <span>Çivili ahşap tabut → ~532 nT &nbsp;<strong style="color:var(--green-accent)">(GÖRÜLEBİLİR!)</strong></span>
+          </div>
+          <div class="truth-item">
+            <span class="t-icon" style="color:var(--green-accent)">✅</span>
+            <span>Demir kılıç → ~945 nT &nbsp;<strong style="color:var(--green-accent)">(GÖRÜLEBİLİR!)</strong></span>
+          </div>
+        </div>
+
+        <h3>🚫 Yaygın Yanlış İddialar</h3>
+        <div class="warning-box">
+          <div class="warn-title">1. "Cihazımız 10m derinliği görür"</div>
+          Fizik kuralları herkes için aynıdır. 10m derinlikte boşluk, <strong>HİÇBİR</strong> manyetik cihazla tespit edilemez.
+        </div>
+        <div class="warning-box">
+          <div class="warn-title">2. "Altın / Gümüş tespit eder"</div>
+          Altın ve gümüş <strong>diamanyetiktir</strong> — manyetik alan oluşturmazlar. Hiçbir manyetometre salt altın veya gümüş tespit edemez.
+        </div>
+        <div class="warning-box">
+          <div class="warn-title">3. "Boşluk / Oda direkt tespit eder"</div>
+          Yalnızca çok sığ (&lt; 0.5m) ve büyük boşluklar kısmi sinyal verir; o da zorlu koşullarda. Boşluk tespiti için GPR (Yer Radarı) gereklidir.
+        </div>
+
+        <h3>✅ Profesyonel Araştırmalarda Doğru Yöntem</h3>
+        <div class="flow-chart">
+          <div class="flow-step">1. GRADİOMETRE ile geniş alan taraması</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">Demir / Yanmış zemin anomalisi tespit edildi mi?</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">2. Şüpheli noktalara GPR (Yer Radarı) uygulaması</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">Boşluk veya yapı şekli görüntülendi mi?</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">3. ERT ile elektrik rezistivite doğrulaması</div>
+          <div class="flow-arrow">↓</div>
+          <div class="flow-step">4. Kontrollü Kazı</div>
+        </div>
+
+        <div class="highlight-box" style="margin-top: 24px;">
+          <strong>Sonuç:</strong> Shadow Gradiometre harika bir araçtır — ancak <strong>doğru hedef için</strong> kullanılmalıdır.
+          Boşluk değil, manyetik malzeme veya yanmış zemin arıyorsanız bu sistem size doğru sonucu verir.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="container">
+      <div class="cta-box reveal">
+        <span class="section-label" style="justify-content: center;">Shadow Sistemi</span>
+        <h2 class="cta-title">Sahada Fark Yarat</h2>
+        <p class="cta-desc">Shadow Gradiometre ve ShadowView hakkında teknik sorularınız için bizimle iletişime geçin.</p>
+        <div style="display:flex; gap:16px; justify-content:center; flex-wrap:wrap;">
+          <a href="iletisim.html" class="btn btn-primary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            İletişime Geç
+          </a>
+          <a href="urunler.html" class="btn" style="background:var(--bg-glass);border:1px solid var(--border-glass);color:var(--text-primary);backdrop-filter:blur(10px);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+            Ürünleri İncele
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-brand-text">Gölge <span>Teknoloji</span></div>
+          <p class="footer-desc">Gölge Seninle, Keşif Senin Elinde.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Sayfalar</h4>
+          <ul>
+            <li><a href="index.html">Ana Sayfa</a></li>
+            <li><a href="urunler.html">Ürünler</a></li>
+            <li><a href="shadow-view.html">Shadow View</a></li>
+            <li><a href="hakkinda.html">Hakkında</a></li>
+            <li><a href="gradiometre-hakkinda.html">Gradiometre Hakkında</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Ürünler</h4>
+          <ul>
+            <li><a href="urunler.html#gravion">Shadow Gravion</a></li>
+            <li><a href="urunler.html#gradiometre">Shadow Gradiometre</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>İletişim</h4>
+          <ul>
+            <li><a href="tel:+905400170054">+90 540 017 00 54</a></li>
+            <li><a href="mailto:teknolojigolge@gmail.com">teknolojigolge@gmail.com</a></li>
+            <li><a href="shadow-view-privacy.html">Shadow View Gizlilik</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Gölge Teknoloji. Tüm hakları saklıdır.</span>
+        <div class="footer-social">
+          <a href="https://www.instagram.com/golge_teknoloji54" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+          </a>
+          <a href="https://www.facebook.com/people/Gölge-Şahin/pfbid02YoLfV1jC4AcH2RBykmioZxCBe2sCg8xGybieKEhtLKyEqLVEfskRKcp5o2JLeQUBl" aria-label="Facebook" target="_blank" rel="noopener noreferrer">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+
+    // Navbar scroll effect
+    const navbar = document.querySelector('.navbar');
+    function handleScroll() {
+      navbar.classList.toggle('scrolled', window.scrollY > 40);
+    }
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+
+    // Mobile menu toggle
+    const navToggle = document.querySelector('.nav-toggle');
+    const navLinks = document.querySelector('.nav-links');
+
+    if (navToggle) {
+      navToggle.addEventListener('click', () => {
+        navToggle.classList.toggle('active');
+        navLinks.classList.toggle('open');
+        document.body.style.overflow = navLinks.classList.contains('open') ? 'hidden' : '';
+      });
+
+      navLinks.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+          navToggle.classList.remove('active');
+          navLinks.classList.remove('open');
+          document.body.style.overflow = '';
+        });
+      });
+    }
+
+    // Reveal on scroll
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+    reveals.forEach(el => observer.observe(el));
+
+  });
+  </script>
+</body>
+</html>

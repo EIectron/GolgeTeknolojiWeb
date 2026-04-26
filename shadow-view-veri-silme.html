@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Shadow View — Gizlilik Politikası | Gölge Teknoloji</title>
-  <meta name="description" content="Shadow View Android uygulaması gizlilik politikası. Kullanıcı verilerinin nasıl toplandığı, kullanıldığı ve korunduğu hakkında şeffaf bilgi.">
+  <title>Shadow View — Hesap ve Veri Silme Talebi | Gölge Teknoloji</title>
+  <meta name="description" content="Shadow View Android uygulaması için hesap ve ilişkili verilerin silinmesi talebi. Kullanıcı verilerinin silinme süreci ve başvuru yöntemleri.">
   <style>
 /* ============================================
    GÖLGE TEKNOLOJİ — Futuristic Dark Theme
@@ -12,7 +12,6 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Exo+2:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap');
 
-/* === CSS Variables === */
 :root {
   --bg-deep: #050810;
   --bg-primary: #0a0e1a;
@@ -31,6 +30,7 @@
   --purple: #8b5cf6;
   --purple-glow: rgba(139, 92, 246, 0.3);
   --red-accent: #ff4060;
+  --red-glow: rgba(255, 64, 96, 0.3);
   --green-accent: #48bb78;
 
   --text-primary: #e8ecf4;
@@ -47,7 +47,6 @@
   --transition-slow: 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* === Reset & Base === */
 *, *::before, *::after {
   margin: 0;
   padding: 0;
@@ -117,7 +116,7 @@ button { cursor: pointer; font-family: inherit; }
 
 .bg-orbs .orb:nth-child(1) {
   width: 500px; height: 500px;
-  background: var(--purple);
+  background: var(--red-accent);
   top: -10%; left: -10%;
   animation-delay: 0s;
 }
@@ -131,7 +130,7 @@ button { cursor: pointer; font-family: inherit; }
 
 .bg-orbs .orb:nth-child(3) {
   width: 350px; height: 350px;
-  background: var(--gold);
+  background: var(--purple);
   top: 50%; right: 30%;
   animation-delay: -14s;
 }
@@ -329,6 +328,17 @@ button { cursor: pointer; font-family: inherit; }
   transform: translateY(-2px);
 }
 
+.btn-danger {
+  background: linear-gradient(135deg, #c0303f, var(--red-accent));
+  color: #fff;
+  box-shadow: 0 0 25px var(--red-glow), 0 4px 15px rgba(0,0,0,0.3);
+}
+
+.btn-danger:hover {
+  box-shadow: 0 0 40px var(--red-glow), 0 8px 25px rgba(0,0,0,0.4);
+  transform: translateY(-2px);
+}
+
 .btn svg { width: 18px; height: 18px; }
 
 /* === CTA === */
@@ -338,7 +348,7 @@ button { cursor: pointer; font-family: inherit; }
 }
 
 .cta-box {
-  background: linear-gradient(135deg, rgba(0, 240, 255, 0.05), rgba(139, 92, 246, 0.05));
+  background: linear-gradient(135deg, rgba(255, 64, 96, 0.05), rgba(139, 92, 246, 0.05));
   border: 1px solid var(--border-glass);
   border-radius: 32px;
   padding: 64px 48px;
@@ -351,7 +361,7 @@ button { cursor: pointer; font-family: inherit; }
   position: absolute;
   top: -1px; left: 0; right: 0;
   height: 2px;
-  background: linear-gradient(90deg, transparent, var(--cyan), var(--gold), transparent);
+  background: linear-gradient(90deg, transparent, var(--red-accent), var(--cyan), transparent);
 }
 
 .cta-title {
@@ -364,7 +374,7 @@ button { cursor: pointer; font-family: inherit; }
 .cta-desc {
   font-size: 17px;
   color: var(--text-secondary);
-  max-width: 500px;
+  max-width: 600px;
   margin: 0 auto 32px;
   line-height: 1.8;
 }
@@ -483,7 +493,7 @@ button { cursor: pointer; font-family: inherit; }
 }
 
 .page-header .gradient-text {
-  background: linear-gradient(135deg, var(--purple), var(--cyan));
+  background: linear-gradient(135deg, var(--red-accent), var(--gold));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -492,7 +502,7 @@ button { cursor: pointer; font-family: inherit; }
 .page-header p {
   font-size: 17px;
   color: var(--text-secondary);
-  max-width: 600px;
+  max-width: 640px;
   line-height: 1.8;
 }
 
@@ -501,13 +511,13 @@ button { cursor: pointer; font-family: inherit; }
   align-items: center;
   gap: 8px;
   padding: 5px 14px;
-  background: rgba(139, 92, 246, 0.1);
-  border: 1px solid rgba(139, 92, 246, 0.2);
+  background: rgba(255, 64, 96, 0.1);
+  border: 1px solid rgba(255, 64, 96, 0.25);
   border-radius: 50px;
   font-family: var(--font-heading);
   font-size: 13px;
   font-weight: 600;
-  color: var(--purple);
+  color: var(--red-accent);
   margin-bottom: 20px;
   letter-spacing: 1px;
 }
@@ -524,32 +534,17 @@ button { cursor: pointer; font-family: inherit; }
   transform: translateY(0);
 }
 
-.reveal-delay-1 { transition-delay: 0.1s; }
-.reveal-delay-2 { transition-delay: 0.2s; }
-.reveal-delay-3 { transition-delay: 0.3s; }
-
-/* === Glowing Separator === */
-.glow-line {
-  width: 100%;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--cyan-dim), transparent);
-  position: relative;
-  z-index: 1;
-}
-
 /* ============================================
-   PAGE-SPECIFIC: PRIVACY POLICY
+   PAGE-SPECIFIC: DATA DELETION
    ============================================ */
-
-/* TOC (Table of contents) sidebar */
-.privacy-layout {
+.delete-layout {
   display: grid;
   grid-template-columns: 260px 1fr;
   gap: 48px;
   align-items: start;
 }
 
-.privacy-toc {
+.delete-toc {
   position: sticky;
   top: calc(var(--nav-height) + 24px);
   background: var(--bg-glass);
@@ -559,7 +554,7 @@ button { cursor: pointer; font-family: inherit; }
   backdrop-filter: blur(15px);
 }
 
-.privacy-toc h3 {
+.delete-toc h3 {
   font-family: var(--font-heading);
   font-size: 13px;
   font-weight: 700;
@@ -571,14 +566,14 @@ button { cursor: pointer; font-family: inherit; }
   border-bottom: 1px solid var(--border-glass);
 }
 
-.privacy-toc ul {
+.delete-toc ul {
   list-style: none;
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
 
-.privacy-toc ul a {
+.delete-toc ul a {
   display: block;
   padding: 8px 12px;
   font-size: 13px;
@@ -588,12 +583,11 @@ button { cursor: pointer; font-family: inherit; }
   line-height: 1.4;
 }
 
-.privacy-toc ul a:hover {
+.delete-toc ul a:hover {
   background: var(--bg-glass-hover);
   color: var(--cyan);
 }
 
-/* Policy sections */
 .policy-section {
   background: var(--bg-glass);
   border: 1px solid var(--border-glass);
@@ -611,7 +605,7 @@ button { cursor: pointer; font-family: inherit; }
   position: absolute;
   top: 0; left: 0;
   width: 4px; height: 100%;
-  background: linear-gradient(180deg, var(--purple), var(--cyan));
+  background: linear-gradient(180deg, var(--red-accent), var(--gold));
   border-radius: 0;
 }
 
@@ -705,7 +699,16 @@ button { cursor: pointer; font-family: inherit; }
   color: var(--text-primary);
 }
 
-/* Info box */
+.policy-section a {
+  color: var(--cyan);
+  transition: var(--transition);
+}
+
+.policy-section a:hover {
+  text-decoration: underline;
+}
+
+/* Info / colored boxes */
 .info-box {
   background: linear-gradient(135deg, rgba(139, 92, 246, 0.07), rgba(0, 240, 255, 0.07));
   border: 1px solid rgba(139, 92, 246, 0.15);
@@ -720,7 +723,6 @@ button { cursor: pointer; font-family: inherit; }
 
 .info-box strong { color: var(--purple); }
 
-/* Green box */
 .green-box {
   background: rgba(72, 187, 120, 0.06);
   border: 1px solid rgba(72, 187, 120, 0.15);
@@ -735,7 +737,6 @@ button { cursor: pointer; font-family: inherit; }
 
 .green-box strong { color: var(--green-accent); }
 
-/* Gold box */
 .gold-box {
   background: rgba(240, 192, 64, 0.06);
   border: 1px solid rgba(240, 192, 64, 0.15);
@@ -749,6 +750,217 @@ button { cursor: pointer; font-family: inherit; }
 }
 
 .gold-box strong { color: var(--gold); }
+
+.red-box {
+  background: rgba(255, 64, 96, 0.06);
+  border: 1px solid rgba(255, 64, 96, 0.15);
+  border-radius: 12px;
+  padding: 18px 22px;
+  margin: 16px 0;
+  border-left: 3px solid var(--red-accent);
+  font-size: 15px;
+  color: var(--text-secondary);
+  line-height: 1.8;
+}
+
+.red-box strong { color: var(--red-accent); }
+
+/* Process steps */
+.steps {
+  display: grid;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.step {
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  gap: 18px;
+  align-items: start;
+  background: var(--bg-glass);
+  border: 1px solid var(--border-glass);
+  border-radius: 14px;
+  padding: 18px 20px;
+  transition: var(--transition);
+}
+
+.step:hover {
+  border-color: var(--border-glow);
+  background: var(--bg-glass-hover);
+}
+
+.step-num {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--cyan-dim), var(--cyan));
+  color: var(--bg-deep);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 18px var(--cyan-glow);
+}
+
+.step h4 {
+  font-family: var(--font-heading);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+  letter-spacing: 0.4px;
+}
+
+.step p {
+  font-size: 14.5px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* Data table */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 8px 0 4px;
+  font-size: 14.5px;
+}
+
+.data-table th {
+  text-align: left;
+  font-family: var(--font-heading);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--cyan);
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border-glass);
+}
+
+.data-table td {
+  padding: 12px 14px;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border-glass);
+  vertical-align: top;
+  line-height: 1.6;
+}
+
+.data-table tr:last-child td { border-bottom: none; }
+.data-table strong { color: var(--text-primary); }
+
+.tag {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.tag-local {
+  background: rgba(72, 187, 120, 0.12);
+  color: var(--green-accent);
+  border: 1px solid rgba(72, 187, 120, 0.3);
+}
+
+.tag-server {
+  background: rgba(255, 64, 96, 0.12);
+  color: var(--red-accent);
+  border: 1px solid rgba(255, 64, 96, 0.3);
+}
+
+.tag-optional {
+  background: rgba(240, 192, 64, 0.12);
+  color: var(--gold);
+  border: 1px solid rgba(240, 192, 64, 0.3);
+}
+
+/* Form */
+.delete-form {
+  background: linear-gradient(135deg, rgba(255, 64, 96, 0.04), rgba(139, 92, 246, 0.04));
+  border: 1px solid rgba(255, 64, 96, 0.18);
+  border-radius: 20px;
+  padding: 36px;
+  margin-top: 12px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.form-group label {
+  font-family: var(--font-heading);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--cyan);
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  background: rgba(5, 8, 16, 0.6);
+  border: 1px solid var(--border-glass);
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-family: var(--font-body);
+  font-size: 14.5px;
+  color: var(--text-primary);
+  transition: var(--transition);
+}
+
+.form-group textarea {
+  min-height: 130px;
+  resize: vertical;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: var(--cyan-dim);
+  box-shadow: 0 0 0 3px rgba(0, 240, 255, 0.08);
+}
+
+.form-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 18px;
+  line-height: 1.6;
+}
+
+.form-checkbox input {
+  margin-top: 4px;
+  accent-color: var(--cyan);
+  width: 16px; height: 16px;
+}
+
+.form-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
 
 /* Contact table */
 .contact-table {
@@ -787,7 +999,7 @@ button { cursor: pointer; font-family: inherit; }
 
 /* Responsive */
 @media (max-width: 1024px) {
-  .privacy-layout { grid-template-columns: 220px 1fr; gap: 32px; }
+  .delete-layout { grid-template-columns: 220px 1fr; gap: 32px; }
   .footer-grid { grid-template-columns: 1fr 1fr; }
 }
 
@@ -814,12 +1026,16 @@ button { cursor: pointer; font-family: inherit; }
 
   .section { padding: 60px 0; }
   .page-header { padding: 120px 0 60px; }
-  .privacy-layout { grid-template-columns: 1fr; }
-  .privacy-toc { position: static; }
+  .delete-layout { grid-template-columns: 1fr; }
+  .delete-toc { position: static; }
   .footer-grid { grid-template-columns: 1fr; gap: 32px; }
   .footer-bottom { flex-direction: column; gap: 16px; text-align: center; }
   .cta-box { padding: 40px 24px; }
   .policy-section { padding: 28px 20px; }
+  .delete-form { padding: 24px; }
+  .form-row { grid-template-columns: 1fr; }
+  .step { grid-template-columns: 1fr; gap: 10px; }
+  .data-table th, .data-table td { padding: 10px 8px; font-size: 13px; }
 }
 
 @media (max-width: 480px) {
@@ -861,298 +1077,324 @@ button { cursor: pointer; font-family: inherit; }
   <header class="page-header">
     <div class="container">
       <div class="update-badge">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-        Son Güncelleme: Şubat 2026
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6h14z"/></svg>
+        Hesap ve Veri Silme
       </div>
       <span class="section-label">Shadow View Uygulaması</span>
-      <h1>Gizlilik <span class="gradient-text">Politikası</span></h1>
-      <p>Shadow View'ın kişisel verilerinize yaklaşımı — şeffaf, güvenli ve Google Play politikalarıyla tam uyumlu.</p>
+      <h1>Hesap ve Veri <span class="gradient-text">Silme Talebi</span></h1>
+      <p>Shadow View uygulamasındaki hesabınızın ve ilişkili tüm verilerinizin silinmesini bu sayfa üzerinden talep edebilirsiniz. Süreç hakkında detaylı bilgi ve başvuru formu aşağıda yer almaktadır.</p>
     </div>
   </header>
 
   <!-- Content -->
   <section class="section" style="padding-top: 48px;">
     <div class="container">
-      <div class="privacy-layout">
+      <div class="delete-layout">
 
         <!-- TOC -->
-        <aside class="privacy-toc reveal">
+        <aside class="delete-toc reveal">
           <h3>İçindekiler</h3>
           <ul>
-            <li><a href="#giris">1. Giriş</a></li>
-            <li><a href="#toplanan-veriler">2. Toplanan Veriler</a></li>
-            <li><a href="#veri-kullanimi">3. Verilerin Kullanımı</a></li>
-            <li><a href="#veri-paylasimi">4. Veri Paylaşımı</a></li>
-            <li><a href="#veri-depolama">5. Veri Depolama</a></li>
-            <li><a href="#veri-guvenligi">6. Veri Güvenliği</a></li>
-            <li><a href="#kullanici-haklari">7. Kullanıcı Hakları</a></li>
-            <li><a href="#izinler">8. Uygulama İzinleri</a></li>
-            <li><a href="#ucuncu-taraf">9. Üçüncü Taraf Hizmetler</a></li>
-            <li><a href="#cocuklar">10. Çocukların Gizliliği</a></li>
-            <li><a href="#degisiklikler">11. Politika Değişiklikleri</a></li>
-            <li><a href="#iletisim">12. İletişim</a></li>
+            <li><a href="#genel-bakis">1. Genel Bakış</a></li>
+            <li><a href="#silinecek-veriler">2. Silinecek Veriler</a></li>
+            <li><a href="#uygulama-icinden">3. Uygulama İçinden Silme</a></li>
+            <li><a href="#android-ayarlari">4. Android Ayarlarından Silme</a></li>
+            <li><a href="#talep-formu">5. Resmi Silme Talebi</a></li>
+            <li><a href="#islem-suresi">6. Süreç ve Yanıt Süresi</a></li>
+            <li><a href="#saklanan-veriler">7. Saklanabilecek Veriler</a></li>
+            <li><a href="#iletisim">8. İletişim</a></li>
           </ul>
         </aside>
 
-        <!-- Policy Content -->
-        <div class="privacy-content">
+        <!-- Content -->
+        <div class="delete-content">
 
-          <!-- 1. Giriş -->
-          <div id="giris" class="policy-section reveal">
-            <h2><span class="sec-icon">📋</span> 1. Giriş</h2>
+          <!-- 1. Genel Bakış -->
+          <div id="genel-bakis" class="policy-section reveal">
+            <h2><span class="sec-icon">📋</span> 1. Genel Bakış</h2>
             <p>
-              Bu Gizlilik Politikası, <strong>Gölge Teknoloji</strong> tarafından geliştirilen
-              <strong>Shadow View</strong> Android uygulamasının kullanıcı verilerini nasıl topladığını,
-              kullandığını, sakladığını ve koruduğunu açıklamaktadır.
+              <strong>Gölge Teknoloji</strong>, kullanıcıların kişisel verileri üzerinde tam kontrol
+              sahibi olması gerektiğine inanır. Shadow View uygulamasındaki hesabınızı ve
+              ilişkili tüm verilerinizi silmek için bu sayfada açıklanan yöntemleri
+              kullanabilirsiniz.
             </p>
             <p>
-              Shadow View uygulamasını indirerek veya kullanarak bu politikayı kabul etmiş
-              sayılırsınız. Uygulamayı kullanmaya devam etmek istemiyorsanız lütfen
-              uygulamayı kaldırınız.
+              Shadow View, mümkün olan tüm verileri yerel cihazınızda saklamak üzere
+              tasarlanmıştır. Bu nedenle çoğu durumda silme işlemi anında ve doğrudan
+              cihazınızda gerçekleşir; harici sunuculara veri silme talebi göndermenize
+              gerek kalmaz.
             </p>
-            <div class="info-box">
-              <strong>Temel İlke:</strong> Shadow View; Shadow Gradiometre ve Shadow Gravion cihazlarından
-              alınan manyetik / radar verilerini görselleştirmek için tasarlanmış profesyonel bir araçtır.
-              Gizliliğiniz bizim için önceliklidir — verileriniz yalnızca uygulamanın temel işlevleri
-              için kullanılır.
-            </div>
-          </div>
-
-          <!-- 2. Toplanan Veriler -->
-          <div id="toplanan-veriler" class="policy-section reveal">
-            <h2><span class="sec-icon">📊</span> 2. Toplanan Veriler</h2>
-
-            <h3>Biz Tarafından Toplanan Veriler</h3>
-            <p>Shadow View uygulaması aşağıdaki verileri yerel cihazınızda işler:</p>
-            <ul>
-              <li><strong>Cihaz Ölçüm Verileri:</strong> Shadow sensör cihazından WiFi üzerinden alınan manyetik alan ve radar ölçüm verileri. Bu veriler cihazınızda yerel olarak işlenir ve saklanır.</li>
-              <li><strong>Tarama Oturumu Verileri:</strong> Oluşturduğunuz tarama oturumları, harita verileri ve anomali kayıtları yalnızca cihazınızda depolanır.</li>
-              <li><strong>Uygulama Tercihleri:</strong> Renk paleti, filtre ayarları, görüntüleme modu gibi uygulama içi tercihler yerel depolamada tutulur.</li>
-            </ul>
-
-            <h3>Otomatik Olarak Toplanan Veriler</h3>
-            <p>Uygulama, normal çalışması sırasında aşağıdaki teknik bilgilere erişebilir:</p>
-            <ul>
-              <li><strong>WiFi Ağ Bilgisi:</strong> Shadow sensör cihazına bağlantı kurmak için yerel WiFi ağ bilgisi gereklidir. Bu bilgi sunucularımıza gönderilmez.</li>
-              <li><strong>Depolama Alanı:</strong> Tarama sonuçları, CSV ve HTML raporları cihazınızın dahili depolama alanına kaydedilir.</li>
-              <li><strong>Konum Verisi (İsteğe Bağlı):</strong> Tarama verilerine coğrafi konum eklemek isteyenler için yalnızca izin verildiğinde ve kullanıldığında alınır. Sunucularımıza gönderilmez.</li>
-            </ul>
-
-            <div class="green-box">
-              <strong>Toplamadığımız Veriler:</strong> Ad, soyad, e-posta adresi, telefon numarası,
-              ödeme bilgisi, konum geçmişi (sürekli), tarayıcı geçmişi, kişi listesi veya başka
-              kişisel tanımlayıcı bilgiler toplanmaz.
-            </div>
-          </div>
-
-          <!-- 3. Veri Kullanımı -->
-          <div id="veri-kullanimi" class="policy-section reveal">
-            <h2><span class="sec-icon">⚙️</span> 3. Verilerin Kullanımı</h2>
-            <p>Toplanan veriler yalnızca aşağıdaki amaçlar için kullanılır:</p>
-            <ul>
-              <li><strong>Uygulamanın Temel İşlevi:</strong> Shadow Gradiometre ve Gravion cihazlarından gelen verileri gerçek zamanlı işlemek, 2D/3D/4D görselleştirme oluşturmak.</li>
-              <li><strong>ShadowAI Analizi:</strong> Anomali tespiti ve yorum için yapay zeka modülünün yerel cihazda çalıştırılması. Analiz veriniz harici sunuculara aktarılmaz.</li>
-              <li><strong>Veri Dışa Aktarımı:</strong> Kullanıcının talep etmesi halinde tarama verilerinin CSV, HTML veya görsel formatında yerel cihaza kaydedilmesi.</li>
-              <li><strong>Uygulama Performansı:</strong> Bağlantı kalitesi ve örnekleme hızı optimizasyonu için anlık cihaz istatistikleri.</li>
-              <li><strong>Kişiselleştirme:</strong> Kullanıcının seçtiği uygulama tema ve filtre ayarlarının saklanması.</li>
-            </ul>
 
             <div class="info-box">
-              <strong>Önemli:</strong> Verileriniz pazarlama, profilleme, reklam hedefleme veya üçüncü
-              taraf analiz amaçlarıyla kullanılmaz.
+              <strong>Önemli:</strong> Bu sayfa, Google Play Veri Güvenliği gereksinimleri
+              kapsamında kullanıcıların hesap ve veri silme taleplerini iletebilmeleri için
+              hazırlanmıştır. Ayrıntılı veri işleme bilgisi için
+              <a href="shadow-view-privacy.html" style="color:var(--purple); text-decoration:underline;">Shadow View Gizlilik Politikası</a> sayfasını inceleyebilirsiniz.
             </div>
           </div>
 
-          <!-- 4. Veri Paylaşımı -->
-          <div id="veri-paylasimi" class="policy-section reveal">
-            <h2><span class="sec-icon">🔗</span> 4. Veri Paylaşımı</h2>
+          <!-- 2. Silinecek Veriler -->
+          <div id="silinecek-veriler" class="policy-section reveal">
+            <h2><span class="sec-icon">🗂️</span> 2. Silinecek Veriler</h2>
             <p>
-              Gölge Teknoloji, kullanıcı verilerini üçüncü taraflarla <strong>satmaz</strong>,
-              <strong>kiralamaz</strong> veya ticari amaçlarla <strong>paylaşmaz</strong>.
+              Aşağıdaki tablo Shadow View tarafından işlenen veri türlerini ve silme
+              talebiyle birlikte ne olacağını özetler:
             </p>
 
-            <h3>Sınırlı Paylaşım Koşulları</h3>
-            <p>Aşağıdaki istisnai durumlarda veri paylaşımı söz konusu olabilir:</p>
-            <ul>
-              <li><strong>Kullanıcı İnisiyatifi:</strong> Kullanıcı, dışa aktarma özelliğini kullanarak raporunu kendi iradesiyle başka kişi veya platformlarla paylaşırsa.</li>
-              <li><strong>Yasal Zorunluluk:</strong> Yetkili Türk mahkemeleri veya yasal makamlardan bağlayıcı bir talep gelmesi halinde, yalnızca yasal olarak zorunlu bilgilerle sınırlı biçimde.</li>
-              <li><strong>Varlık Devri:</strong> Şirket birleşmesi veya satın alınması durumunda, kullanıcılar önceden bilgilendirilir ve bu politika aynı şartlarda geçerliliğini sürdürür.</li>
-            </ul>
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Veri Türü</th>
+                  <th>Konum</th>
+                  <th>Silme Sonrası</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Tarama Oturumları</strong> <br><span style="font-size:12px;color:var(--text-muted)">manyetik / radar ölçüm verileri</span></td>
+                  <td><span class="tag tag-local">Yerel Cihaz</span></td>
+                  <td>Geri alınamaz şekilde silinir</td>
+                </tr>
+                <tr>
+                  <td><strong>Anomali Kayıtları</strong></td>
+                  <td><span class="tag tag-local">Yerel Cihaz</span></td>
+                  <td>Geri alınamaz şekilde silinir</td>
+                </tr>
+                <tr>
+                  <td><strong>Uygulama Tercihleri</strong> <br><span style="font-size:12px;color:var(--text-muted)">renk paleti, filtreler, tema</span></td>
+                  <td><span class="tag tag-local">Yerel Cihaz</span></td>
+                  <td>Varsayılana sıfırlanır / silinir</td>
+                </tr>
+                <tr>
+                  <td><strong>Dışa Aktarılan Raporlar</strong> <br><span style="font-size:12px;color:var(--text-muted)">CSV / HTML / görseller</span></td>
+                  <td><span class="tag tag-local">Cihaz Depolama</span></td>
+                  <td>Manuel olarak silinmelidir</td>
+                </tr>
+                <tr>
+                  <td><strong>Konum Verisi</strong></td>
+                  <td><span class="tag tag-optional">İsteğe Bağlı</span></td>
+                  <td>Cihazda yerel olup oturumla birlikte silinir</td>
+                </tr>
+                <tr>
+                  <td><strong>Destek E-posta Yazışmaları</strong></td>
+                  <td><span class="tag tag-server">E-posta Sunucusu</span></td>
+                  <td>Talep üzerine 30 gün içinde silinir</td>
+                </tr>
+              </tbody>
+            </table>
 
             <div class="green-box">
-              <strong>Kullanıcı İzni Olmadan Paylaşılmaz:</strong> Herhangi bir üçüncü taraf ile
-              kullanıcı onayı olmaksızın kişisel veri paylaşımı yapılmaz.
+              <strong>Hesap Modeli:</strong> Shadow View, kullanıcı kayıt veya giriş gerektirmez.
+              Bu nedenle ad, soyad, e-posta, telefon, ödeme bilgisi, oturum çerezi gibi
+              hesap tabanlı kişisel veriler tarafımızca <strong>tutulmaz</strong>.
             </div>
           </div>
 
-          <!-- 5. Veri Depolama -->
-          <div id="veri-depolama" class="policy-section reveal">
-            <h2><span class="sec-icon">💾</span> 5. Veri Depolama ve Saklama Süresi</h2>
-
-            <h3>Yerel Depolama</h3>
+          <!-- 3. Uygulama içinden silme -->
+          <div id="uygulama-icinden" class="policy-section reveal">
+            <h2><span class="sec-icon">📱</span> 3. Uygulama İçinden Silme</h2>
             <p>
-              Tüm tarama verileri, oturum kayıtları ve uygulama tercihleri yalnızca kullanıcının
-              cihazında, Android sisteminin sağladığı uygulama korumalı depolama alanında saklanır.
-              Gölge Teknoloji bu verilere uzaktan erişemez.
+              Shadow View uygulamasındaki tarama oturumlarını ve anomali kayıtlarını
+              uygulama arayüzü üzerinden silebilirsiniz:
             </p>
 
-            <h3>Saklama Süresi</h3>
-            <ul>
-              <li><strong>Tarama Oturumları:</strong> Kullanıcı silene kadar cihazda saklanır.</li>
-              <li><strong>Uygulama Tercihleri:</strong> Uygulama kaldırılana kadar cihazda saklanır.</li>
-              <li><strong>Dışa Aktarılan Raporlar:</strong> Kullanıcının cihaz depolama alanında, kullanıcı silene kadar kalır.</li>
-            </ul>
+            <div class="steps">
+              <div class="step">
+                <div class="step-num">1</div>
+                <div>
+                  <h4>Shadow View Uygulamasını Açın</h4>
+                  <p>Cihazınızdan Shadow View uygulamasını başlatın ve ana ekrana geçin.</p>
+                </div>
+              </div>
+              <div class="step">
+                <div class="step-num">2</div>
+                <div>
+                  <h4>"Tarama Geçmişi" Bölümüne Gidin</h4>
+                  <p>Menüden <strong>Tarama Geçmişi</strong> (Sessions) sekmesini açın. Kayıtlı oturumlarınızı listede göreceksiniz.</p>
+                </div>
+              </div>
+              <div class="step">
+                <div class="step-num">3</div>
+                <div>
+                  <h4>Tek Tek veya Toplu Silme</h4>
+                  <p>Her oturumun yanındaki <strong>çöp kutusu</strong> simgesi ile tek bir kaydı silebilir, üst menüdeki <strong>Tümünü Sil</strong> seçeneğiyle tüm kayıtları kaldırabilirsiniz.</p>
+                </div>
+              </div>
+              <div class="step">
+                <div class="step-num">4</div>
+                <div>
+                  <h4>Ayarlardan Tercihleri Sıfırlayın</h4>
+                  <p><strong>Ayarlar → Uygulamayı Sıfırla</strong> seçeneği ile tema, filtre ve görüntüleme tercihlerinizi varsayılan değerlere döndürebilirsiniz.</p>
+                </div>
+              </div>
+            </div>
 
-            <h3>Veri Silme</h3>
-            <p>
-              Tüm uygulama verilerini silmek için Android sistem ayarlarından
-              <em>"Uygulama Bilgisi → Depolamayı Temizle"</em> seçeneğini kullanabilir
-              veya uygulamayı tamamen kaldırabilirsiniz.
-            </p>
+            <div class="info-box">
+              Uygulama içinden yapılan silme işlemleri <strong>anında</strong> ve geri alınamaz
+              şekilde gerçekleşir. Önemli verileri silmeden önce dışa aktarmanızı öneririz.
+            </div>
           </div>
 
-          <!-- 6. Veri Güvenliği -->
-          <div id="veri-guvenligi" class="policy-section reveal">
-            <h2><span class="sec-icon">🔒</span> 6. Veri Güvenliği</h2>
+          <!-- 4. Android Ayarlarından silme -->
+          <div id="android-ayarlari" class="policy-section reveal">
+            <h2><span class="sec-icon">⚙️</span> 4. Android Ayarlarından Silme</h2>
             <p>
-              Gölge Teknoloji, kullanıcı verilerinin güvenliğini sağlamak için aşağıdaki
-              teknik ve idari önlemleri almaktadır:
+              Tüm uygulama verilerini ve ön belleği bir kerede temizlemek isterseniz
+              Android sistem ayarlarını kullanabilirsiniz:
+            </p>
+
+            <div class="steps">
+              <div class="step">
+                <div class="step-num">1</div>
+                <div>
+                  <h4>Ayarlar → Uygulamalar</h4>
+                  <p>Cihaz <strong>Ayarlar</strong> uygulamasını açın ve <strong>Uygulamalar</strong> (veya <em>Uygulama Yönetimi</em>) menüsüne girin.</p>
+                </div>
+              </div>
+              <div class="step">
+                <div class="step-num">2</div>
+                <div>
+                  <h4>"Shadow View" Uygulamasını Seçin</h4>
+                  <p>Listeden <strong>Shadow View</strong> uygulamasını bulup seçin.</p>
+                </div>
+              </div>
+              <div class="step">
+                <div class="step-num">3</div>
+                <div>
+                  <h4>Depolama → Verileri Temizle</h4>
+                  <p><strong>Depolama</strong> menüsünden <strong>Verileri Temizle</strong> ve <strong>Önbelleği Temizle</strong> seçeneklerine basın. Tüm tarama oturumları, tercihler ve önbellek silinecektir.</p>
+                </div>
+              </div>
+              <div class="step">
+                <div class="step-num">4</div>
+                <div>
+                  <h4>(Opsiyonel) Uygulamayı Tamamen Kaldırın</h4>
+                  <p>Daha sonra Shadow View'ı kullanmak istemiyorsanız <strong>Kaldır</strong> seçeneği ile uygulamayı cihazdan tamamen silebilirsiniz. Bu işlem yerel uygulama verilerinin tamamını siler.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="gold-box">
+              <strong>Uyarı:</strong> Android'in <em>Verileri Temizle</em> komutu cihazınızın
+              dahili depolama alanına dışa aktardığınız CSV/HTML raporlarını silmez.
+              Bu raporları cihaz dosya yöneticinizden manuel olarak silmeniz gerekir.
+            </div>
+          </div>
+
+          <!-- 5. Resmi Silme Talebi -->
+          <div id="talep-formu" class="policy-section reveal">
+            <h2><span class="sec-icon">📨</span> 5. Resmi Silme Talebi</h2>
+            <p>
+              Daha önce destek ekibimizle e-posta yoluyla iletişim kurduysanız ya da
+              tarafımızda bulunabilecek herhangi bir veri olabileceğini düşünüyorsanız,
+              aşağıdaki form ile resmi bir silme talebi gönderebilirsiniz. Form gönderildiğinde
+              e-posta uygulamanız <strong>teknolojigolge@gmail.com</strong> adresine
+              ön doldurulmuş bir mesaj ile açılacaktır.
+            </p>
+
+            <form class="delete-form" id="deleteForm" action="mailto:teknolojigolge@gmail.com" method="post" enctype="text/plain">
+              <div class="form-row">
+                <div class="form-group" style="margin-bottom:0;">
+                  <label for="ad">Ad Soyad</label>
+                  <input type="text" id="ad" name="Ad_Soyad" placeholder="Örn. Ahmet Yılmaz" required>
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                  <label for="email">İletişim E-posta</label>
+                  <input type="email" id="email" name="E-posta" placeholder="ornek@eposta.com" required>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group" style="margin-bottom:0;">
+                  <label for="cihaz">Cihaz Modeli (Opsiyonel)</label>
+                  <input type="text" id="cihaz" name="Cihaz" placeholder="Örn. Samsung Galaxy S23">
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                  <label for="kapsam">Talep Kapsamı</label>
+                  <select id="kapsam" name="Kapsam" required>
+                    <option value="" disabled selected>Bir seçenek belirleyin</option>
+                    <option value="Tüm verilerin silinmesi">Tüm verilerin silinmesi</option>
+                    <option value="Yalnızca destek e-posta yazışmaları">Yalnızca destek e-posta yazışmaları</option>
+                    <option value="Yalnızca belirli oturumlar">Yalnızca belirli oturumlar</option>
+                    <option value="Diğer">Diğer (mesajda belirtilecek)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="mesaj">Açıklama / Talep Detayı</label>
+                <textarea id="mesaj" name="Mesaj" placeholder="Lütfen silinmesini istediğiniz veri türlerini, varsa tarih aralığını ve ek bilgileri yazın." required></textarea>
+              </div>
+
+              <label class="form-checkbox">
+                <input type="checkbox" name="Onay" required>
+                <span>
+                  Bu talebin geri alınamaz olduğunu, tarafımdan veya benim adıma yetkili kişi
+                  tarafından gönderildiğini ve <a href="shadow-view-privacy.html" style="color:var(--cyan)">Gizlilik Politikası</a>'nı okuduğumu kabul ediyorum.
+                </span>
+              </label>
+
+              <div class="form-actions">
+                <button type="submit" class="btn btn-danger">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg>
+                  Silme Talebi Gönder
+                </button>
+                <a href="mailto:teknolojigolge@gmail.com?subject=Shadow%20View%20Veri%20Silme%20Talebi&body=Merhaba%2C%0A%0AShadow%20View%20uygulamas%C4%B1ndaki%20verilerimin%20silinmesini%20talep%20ediyorum.%0A%0AAd%20Soyad%3A%0AKay%C4%B1tl%C4%B1%20E-posta%3A%0ACihaz%20Modeli%3A%0ATalep%20Kapsam%C4%B1%3A%0AA%C3%A7%C4%B1klama%3A%0A%0ATe%C5%9Fekk%C3%BCrler." class="btn" style="background:var(--bg-glass);border:1px solid var(--border-glass);color:var(--text-primary);backdrop-filter:blur(10px);">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                  Doğrudan E-posta Gönder
+                </a>
+              </div>
+            </form>
+
+            <div class="info-box" style="margin-top:24px;">
+              <strong>Form Nasıl Çalışır:</strong> Form gönderildiğinde cihazınızın varsayılan
+              e-posta uygulaması <strong>teknolojigolge@gmail.com</strong> adresine, formdaki
+              bilgilerle birlikte bir taslak hazırlar. Mesajı son haliyle kontrol edip
+              <em>Gönder</em> tuşuna bastığınızda talebiniz tarafımıza ulaşır.
+            </div>
+          </div>
+
+          <!-- 6. İşlem süresi -->
+          <div id="islem-suresi" class="policy-section reveal">
+            <h2><span class="sec-icon">⏱️</span> 6. Süreç ve Yanıt Süresi</h2>
+            <ol>
+              <li><strong>Talep Alındı Onayı:</strong> Başvurunuz alındıktan sonra <strong>en geç 3 iş günü</strong> içinde size onay e-postası gönderilir.</li>
+              <li><strong>Doğrulama:</strong> Talebin sahibi olduğunuzu doğrulamak için ek bilgi (örneğin önceki yazışmalarınızda kullandığınız e-posta) istenebilir.</li>
+              <li><strong>Silme İşlemi:</strong> Doğrulamanın ardından tarafımızda saklanan ilgili veriler en geç <strong>30 gün</strong> içinde silinir.</li>
+              <li><strong>Tamamlanma Bildirimi:</strong> İşlem tamamlandığında size yazılı bildirim gönderilir.</li>
+            </ol>
+            <div class="green-box">
+              Yerel cihaz verileriniz için silme işlemi siz uygulamayı kaldırdığınız ya da
+              "Verileri Temizle" komutunu çalıştırdığınız anda gerçekleşir; ek bekleme süresi
+              gerektirmez.
+            </div>
+          </div>
+
+          <!-- 7. Saklanan veriler -->
+          <div id="saklanan-veriler" class="policy-section reveal">
+            <h2><span class="sec-icon">🗄️</span> 7. Saklanabilecek Veriler</h2>
+            <p>
+              Belirli yasal yükümlülükler veya sistem güvenliği nedeniyle aşağıdaki veriler
+              silme talebinden sonra <strong>sınırlı bir süre</strong> daha tutulabilir:
             </p>
             <ul>
-              <li><strong>Yerel İşleme:</strong> Tüm hassas ölçüm verileri cihazda işlenir; uzak sunuculara gönderilmez.</li>
-              <li><strong>Android Güvenli Depolama:</strong> Uygulama verileri Android'in korumalı uygulama sandbox'ı içinde saklanır; başka uygulamalar erişemez.</li>
-              <li><strong>WiFi İletişimi:</strong> Shadow cihazıyla yerel ağ üzerinden gerçekleştirilen veri iletimi şifreleme destekli protokolle korunur.</li>
-              <li><strong>Düzenli Güvenlik Güncellemeleri:</strong> Uygulama bilinen güvenlik açıklarına karşı düzenli olarak güncellenir.</li>
+              <li><strong>Yasal Kayıt Yükümlülüğü:</strong> Türk mevzuatı kapsamında zorunlu tutulan kayıtlar (örn. resmi yazışmalar) yasal saklama süresi sona erene kadar arşivlenir.</li>
+              <li><strong>Güvenlik Logları:</strong> Suistimal ve dolandırıcılık önleme amacıyla anonimleştirilmiş güvenlik kayıtları en fazla 6 ay saklanabilir.</li>
+              <li><strong>Yedekleme Süresi:</strong> Sunucu yedekleri rotasyonu nedeniyle silinen veriler maksimum 30 gün içinde tüm yedeklerden temizlenir.</li>
             </ul>
             <div class="gold-box">
-              <strong>Güvenlik Bildirimi:</strong> Uygulamada bir güvenlik açığı keşfederseniz lütfen
-              <a href="mailto:teknolojigolge@gmail.com" style="color:var(--gold)">teknolojigolge@gmail.com</a>
-              adresine bildirin. Sorumlu açıklama ilkesi çerçevesinde derhal değerlendiririz.
+              Bu istisnalar yalnızca yasal zorunluluklar veya teknik gereklilikler için geçerlidir
+              ve veriler hiçbir şekilde pazarlama, profilleme veya üçüncü taraflarla paylaşma
+              amacıyla kullanılmaz.
             </div>
           </div>
 
-          <!-- 7. Kullanıcı Hakları -->
-          <div id="kullanici-haklari" class="policy-section reveal">
-            <h2><span class="sec-icon">👤</span> 7. Kullanıcı Hakları</h2>
-            <p>
-              Kullanıcılar olarak aşağıdaki haklara sahipsiniz:
-            </p>
-            <ul>
-              <li><strong>Erişim Hakkı:</strong> Uygulamada saklanan verilerinize doğrudan uygulama arayüzü aracılığıyla erişebilirsiniz.</li>
-              <li><strong>Silme Hakkı:</strong> Tarama verilerinizi, oturumlarınızı ve tüm uygulama verilerini istediğiniz zaman silebilirsiniz.</li>
-              <li><strong>Taşıma Hakkı:</strong> Verilerinizi CSV veya HTML formatında dışa aktararak istediğiniz platforma taşıyabilirsiniz.</li>
-              <li><strong>İzin Geri Çekme:</strong> Android ayarlarından konum, depolama gibi uygulama izinlerini istediğiniz zaman kaldırabilirsiniz.</li>
-              <li><strong>Uygulama Kaldırma:</strong> Uygulamayı cihazınızdan kaldırdığınızda tüm yerel veriler otomatik olarak silinir.</li>
-            </ul>
-            <div class="info-box">
-              Haklarınızla ilgili herhangi bir sorununuz varsa
-              <strong>teknolojigolge@gmail.com</strong> adresinden bizimle iletişime geçebilirsiniz.
-              Başvurulara 30 gün içinde yanıt verilir.
-            </div>
-            <div class="info-box">
-              <strong>Hesap ve Veri Silme:</strong> Hesabınızın ve uygulamadaki tüm verilerinizin silinmesini talep etmek için
-              <a href="shadow-view-veri-silme.html" style="color:var(--purple); text-decoration:underline;">Veri Silme Talebi</a>
-              sayfasındaki adımları izleyebilir veya başvuru formunu doldurabilirsiniz.
-            </div>
-          </div>
-
-          <!-- 8. Uygulama İzinleri -->
-          <div id="izinler" class="policy-section reveal">
-            <h2><span class="sec-icon">🔑</span> 8. Uygulama İzinleri</h2>
-            <p>Shadow View, çalışması için aşağıdaki Android izinlerini kullanabilir:</p>
-            <ul>
-              <li>
-                <strong>INTERNET / WIFI_STATE / CHANGE_WIFI_STATE:</strong> Shadow Gradiometre veya Gravion cihazı ile WiFi üzerinden veri iletişimi kurmak için zorunludur. İnternet bağlantısı başka bir amaçla kullanılmaz.
-              </li>
-              <li>
-                <strong>ACCESS_FINE_LOCATION / ACCESS_COARSE_LOCATION (İsteğe Bağlı):</strong>
-                Android 10 ve üzeri sürümlerde WiFi ağına bağlanmak için sistem tarafından talep edilir.
-                Konum verisi yalnızca kullanıcının tarama verisine GPS koordinatı eklemek istediği
-                durumlarda kullanılır; arka planda toplanmaz ve sunucuya gönderilmez.
-              </li>
-              <li>
-                <strong>WRITE_EXTERNAL_STORAGE / READ_EXTERNAL_STORAGE (Android 9 ve altı):</strong>
-                Tarama raporlarını cihaz hafızasına kaydetmek için kullanılır.
-              </li>
-              <li>
-                <strong>VIBRATE:</strong> Önemli anomali tespit uyarıları için titreşim bildirimi.
-              </li>
-            </ul>
-            <div class="green-box">
-              Tüm izinler yalnızca açıklanan işlevler için kullanılır ve izni reddederseniz
-              yalnızca ilgili özellik devre dışı kalır; uygulamanın diğer işlevleri çalışmaya
-              devam eder.
-            </div>
-          </div>
-
-          <!-- 9. Üçüncü Taraf -->
-          <div id="ucuncu-taraf" class="policy-section reveal">
-            <h2><span class="sec-icon">🌐</span> 9. Üçüncü Taraf Hizmetler</h2>
-            <p>
-              Shadow View, mevcut sürümünde kullanıcı verilerini harici sunuculara ileten
-              üçüncü taraf analitik, reklam veya izleme SDK'sı kullanmamaktadır.
-            </p>
-
-            <h3>Google Play Hizmetleri</h3>
-            <p>
-              Uygulama, Google Play Store üzerinden dağıtılmaktadır. Uygulama dağıtımı ve
-              güncelleme sürecinde Google'ın standart Play Store politikaları geçerlidir.
-              Google'ın veri işleme politikası için:
-              <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer"
-                 style="color:var(--cyan)">policies.google.com/privacy</a>
-            </p>
-
-            <h3>Bağlantı Verilebilecek Harici Sayfalar</h3>
-            <p>
-              Uygulama içindeki "Yardım" veya "Hakkında" bölümleri golgeteknoloji.com web sitesine
-              yönlendiren bağlantılar içerebilir. Bu sayfaları ziyaret ettiğinizde ilgili sitenin
-              gizlilik politikası geçerli olur.
-            </p>
-          </div>
-
-          <!-- 10. Çocuklar -->
-          <div id="cocuklar" class="policy-section reveal">
-            <h2><span class="sec-icon">👶</span> 10. Çocukların Gizliliği</h2>
-            <p>
-              Shadow View, jeofizik araştırma ve manyetik ölçüm odaklı profesyonel bir uygulamadır.
-              13 yaşın altındaki çocuklara yönelik değildir ve bu yaş grubundan bilerek kişisel veri
-              toplanmaz.
-            </p>
-            <p>
-              13 yaşın altında bir çocuğun uygulamamızı kullandığından haberdar olursak,
-              söz konusu verileri derhal sileriz. Böyle bir durum fark ederseniz lütfen
-              <strong>teknolojigolge@gmail.com</strong> adresinden bize bildirin.
-            </p>
-          </div>
-
-          <!-- 11. Değişiklikler -->
-          <div id="degisiklikler" class="policy-section reveal">
-            <h2><span class="sec-icon">📝</span> 11. Politika Değişiklikleri</h2>
-            <p>
-              Bu Gizlilik Politikası zaman zaman güncellenebilir. Önemli değişiklikler için
-              kullanıcılar şu yollarla bilgilendirilir:
-            </p>
-            <ul>
-              <li>Google Play Store uygulama açıklamasında güncelleme notu</li>
-              <li>Uygulama içi bildirim (büyük değişiklikler için)</li>
-              <li>Bu sayfadaki "Son Güncelleme" tarihinin revize edilmesi</li>
-            </ul>
-            <p>
-              Güncellenmiş politikayı yayınladıktan sonra uygulamayı kullanmaya devam etmeniz,
-              yeni politikayı kabul ettiğiniz anlamına gelir.
-            </p>
-            <div class="gold-box">
-              <strong>Politika Tarihleri:</strong> Bu politikanın ilk yayın tarihi Şubat 2026'dır.
-              Tüm revizyon geçmişi talep halinde e-posta yoluyla paylaşılabilir.
-            </div>
-          </div>
-
-          <!-- 12. İletişim -->
+          <!-- 8. İletişim -->
           <div id="iletisim" class="policy-section reveal">
-            <h2><span class="sec-icon">📬</span> 12. İletişim</h2>
+            <h2><span class="sec-icon">📬</span> 8. İletişim</h2>
             <p>
-              Bu Gizlilik Politikası hakkında sorularınız, veri silme talepleriniz veya
-              gizlilikle ilgili endişeleriniz için aşağıdaki kanallardan bize ulaşabilirsiniz:
+              Silme talebiniz, başvuru süreciniz veya gizlilik haklarınızla ilgili her türlü
+              soru için aşağıdaki kanallardan bize ulaşabilirsiniz:
             </p>
             <table class="contact-table">
               <tr>
@@ -1160,8 +1402,8 @@ button { cursor: pointer; font-family: inherit; }
                 <td>Gölge Teknoloji</td>
               </tr>
               <tr>
-                <td>E-posta</td>
-                <td><a href="mailto:teknolojigolge@gmail.com">teknolojigolge@gmail.com</a></td>
+                <td>Veri Silme</td>
+                <td><a href="mailto:teknolojigolge@gmail.com?subject=Shadow%20View%20Veri%20Silme%20Talebi">teknolojigolge@gmail.com</a></td>
               </tr>
               <tr>
                 <td>Telefon</td>
@@ -1178,8 +1420,8 @@ button { cursor: pointer; font-family: inherit; }
             </table>
           </div>
 
-        </div><!-- /.privacy-content -->
-      </div><!-- /.privacy-layout -->
+        </div><!-- /.delete-content -->
+      </div><!-- /.delete-layout -->
     </div>
   </section>
 
@@ -1187,13 +1429,13 @@ button { cursor: pointer; font-family: inherit; }
   <section class="cta-section">
     <div class="container">
       <div class="cta-box reveal">
-        <span class="section-label" style="justify-content:center;">Shadow View</span>
-        <h2 class="cta-title">Shadow View'ı Keşfedin</h2>
-        <p class="cta-desc">Manyetik alan verilerinizi gerçek zamanlı görselleştirin. Android cihazınızda ücretsiz başlayın.</p>
+        <span class="section-label" style="justify-content:center;">Yardım</span>
+        <h2 class="cta-title">Sorularınız mı var?</h2>
+        <p class="cta-desc">Veri silme süreci, gizlilik politikamız veya Shadow View uygulamasıyla ilgili her konuda destek ekibimize ulaşabilirsiniz.</p>
         <div style="display:flex; gap:16px; justify-content:center; flex-wrap:wrap;">
-          <a href="shadow-view.html" class="btn btn-primary">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
-            Shadow View Hakkında
+          <a href="shadow-view-privacy.html" class="btn btn-primary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Gizlilik Politikası
           </a>
           <a href="iletisim.html" class="btn" style="background:var(--bg-glass);border:1px solid var(--border-glass);color:var(--text-primary);backdrop-filter:blur(10px);">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
@@ -1236,7 +1478,6 @@ button { cursor: pointer; font-family: inherit; }
             <li><a href="shadow-view-veri-silme.html">Veri Silme Talebi</a></li>
             <li><a href="iletisim.html">İletişim</a></li>
             <li><a href="mailto:teknolojigolge@gmail.com">teknolojigolge@gmail.com</a></li>
-            <li><a href="tel:+905400170054">+90 540 017 00 54</a></li>
           </ul>
         </div>
       </div>
@@ -1299,7 +1540,7 @@ button { cursor: pointer; font-family: inherit; }
 
     // Active TOC highlight on scroll
     const sections = document.querySelectorAll('.policy-section[id]');
-    const tocLinks = document.querySelectorAll('.privacy-toc a');
+    const tocLinks = document.querySelectorAll('.delete-toc a');
 
     const sectionObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
@@ -1321,6 +1562,32 @@ button { cursor: pointer; font-family: inherit; }
     });
 
     sections.forEach(sec => sectionObserver.observe(sec));
+
+    // Mailto form: build a clean prefilled email instead of relying on the
+    // raw text/plain mailto submission, which most desktop browsers block.
+    const form = document.getElementById('deleteForm');
+    if (form) {
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const data = new FormData(form);
+        const subject = 'Shadow View — Hesap ve Veri Silme Talebi';
+        const body =
+          'Merhaba,\n\n' +
+          'Shadow View uygulaması için aşağıdaki bilgilerle hesap ve veri silme talebinde bulunuyorum.\n\n' +
+          'Ad Soyad: ' + (data.get('Ad_Soyad') || '') + '\n' +
+          'İletişim E-posta: ' + (data.get('E-posta') || '') + '\n' +
+          'Cihaz Modeli: ' + (data.get('Cihaz') || '-') + '\n' +
+          'Talep Kapsamı: ' + (data.get('Kapsam') || '') + '\n\n' +
+          'Açıklama:\n' + (data.get('Mesaj') || '') + '\n\n' +
+          'Onay: Bu talebin tarafımdan gönderildiğini ve geri alınamaz olduğunu kabul ediyorum.\n\n' +
+          'Teşekkürler.';
+        const url =
+          'mailto:teknolojigolge@gmail.com' +
+          '?subject=' + encodeURIComponent(subject) +
+          '&body=' + encodeURIComponent(body);
+        window.location.href = url;
+      });
+    }
 
   });
   </script>
